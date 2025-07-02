@@ -1,0 +1,93 @@
+{
+  "env": {},
+  "permissions": {
+    "allow": [],
+    "deny": []
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/pre-commit-validator.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/validate-git-commit.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/log-commands.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/mcp-tool-enforcer.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/duplicate-detector.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/database-extension-check.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/style-consistency.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/api-endpoint-verifier.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/mcp-tool-enforcer.py"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__dart__create_task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/validate-dart-task.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/sync-docs-to-dart.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/session-end-summary.py"
+          }
+        ]
+      }
+    ]
+  }
+}
