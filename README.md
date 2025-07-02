@@ -2,6 +2,13 @@
 
 # Claude Code Hooks
 
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Hooks](https://img.shields.io/badge/hooks-16-orange.svg)
+![Python](https://img.shields.io/badge/python-3.6+-blue.svg)
+![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)
+![Status](https://img.shields.io/badge/status-active-success.svg)
+
 A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) that enforce coding standards, maintain consistency, and automate workflow tasks across all projects.
 
 ## 📚 Documentation
@@ -93,6 +100,359 @@ chmod +x install.sh
 | `log-commands.py` | Before bash commands | Logs all commands |
 | `mcp-tool-enforcer.py` | Various operations | Suggests MCP tool usage |
 | `session-end-summary.py` | Session end | Provides reminders |
+
+## 📋 Detailed Hook Documentation
+
+Click on any hook below to see detailed information about what it does and how it helps your development workflow.
+
+<details>
+<summary><strong>🔍 pre-commit-validator.py</strong> - Your Safety Net Before Commits</summary>
+
+### What it does:
+This hook acts as your personal quality assurance assistant. Before any code gets committed, it automatically:
+- ✅ Runs your test suite to catch broken functionality
+- ✅ Executes linting tools to ensure code style consistency
+- ✅ Performs TypeScript type checking to prevent type errors
+- ✅ Validates that your code meets project standards
+
+### Why it's helpful:
+Imagine pushing code only to find out later that tests are failing or there are linting errors. This hook prevents that embarrassment by catching issues before they reach the repository. It's like having a careful reviewer check your work every time.
+
+### Example output:
+```
+🔍 Running pre-commit validation...
+✅ Tests passed (42 tests, 0 failures)
+✅ Linting passed (0 errors, 0 warnings)
+✅ TypeScript check passed
+✨ All checks passed! Ready to commit.
+```
+</details>
+
+<details>
+<summary><strong>✏️ validate-git-commit.py</strong> - Commit Message Police</summary>
+
+### What it does:
+This hook ensures all commit messages follow a consistent format:
+- 📏 Enforces minimum message length (10+ characters)
+- 🔤 Requires capitalized first letter
+- 🚫 Blocks co-authored commits (no auto-generated attributions)
+- 📝 Ensures conventional commit format when configured
+
+### Why it's helpful:
+Good commit messages make project history readable and searchable. This hook ensures everyone on the team writes clear, consistent commit messages that explain what changed and why.
+
+### Example:
+```
+❌ Bad: "fix bug"
+✅ Good: "Fix navigation menu overflow on mobile devices"
+```
+</details>
+
+<details>
+<summary><strong>🗄️ database-extension-check.py</strong> - Database Schema Guardian</summary>
+
+### What it does:
+Prevents developers from creating unnecessary new database tables when they could extend existing ones:
+- 🔍 Detects when you're creating new migration files
+- 💡 Suggests existing tables that might be extended instead
+- 📊 Encourages proper database normalization
+- 🚫 Blocks creation of duplicate or redundant tables
+
+### Why it's helpful:
+Keeps your database clean and maintainable by preventing table sprawl. Instead of having users, user_profiles, user_settings, and user_preferences as separate tables, it encourages you to use a single users table with appropriate columns.
+
+### Example:
+```
+⚠️  Creating new table 'user_settings'
+💡 Consider extending the existing 'users' table instead
+   You could add a 'settings' JSON column or related fields
+```
+</details>
+
+<details>
+<summary><strong>🔁 duplicate-detector.py</strong> - Code Duplication Police</summary>
+
+### What it does:
+Scans your codebase to prevent creating duplicate:
+- 🛣️ API routes (e.g., two `/api/users` endpoints)
+- 🧩 React/Vue components with the same name
+- 📦 Utility functions that already exist
+- 📄 Similar file names that might cause confusion
+
+### Why it's helpful:
+Duplication leads to maintenance nightmares. This hook helps maintain the DRY (Don't Repeat Yourself) principle by alerting you when similar code already exists.
+
+### Example:
+```
+❌ Duplicate detected!
+   You're creating: components/UserCard.tsx
+   Already exists: components/user/UserCard.tsx
+💡 Consider using the existing component or choosing a different name
+```
+</details>
+
+<details>
+<summary><strong>🎨 style-consistency.py</strong> - Style & Theme Enforcer</summary>
+
+### What it does:
+Ensures consistent styling across your application:
+- 🌓 Enforces dark mode support (checks for dark: variants)
+- 🎨 Prevents hardcoded colors (use theme variables instead)
+- 🧩 Suggests ShadCN UI components over raw HTML elements
+- 📏 Validates spacing uses consistent scale (2, 4, 6, 8, etc.)
+
+### Why it's helpful:
+Maintains a professional, consistent look across your entire application. No more random colors or inconsistent spacing that makes your app look unprofessional.
+
+### Example:
+```
+⚠️  Style issues found:
+   Line 23: Missing dark mode variant for bg-blue-500
+   Line 45: Use ShadCN Button component instead of <button>
+   Line 67: Hardcoded color #3B82F6 - use theme variables
+```
+</details>
+
+<details>
+<summary><strong>🌐 api-endpoint-verifier.py</strong> - API Standards Enforcer</summary>
+
+### What it does:
+Validates that all API endpoints follow best practices:
+- 🔐 Ensures authentication is implemented
+- 📝 Checks for proper input validation
+- 🏷️ Enforces consistent naming conventions
+- ⚡ Validates error handling is in place
+
+### Why it's helpful:
+Prevents security vulnerabilities and ensures a consistent API experience for consumers. No more endpoints that work differently or have security holes.
+
+### Example:
+```
+❌ API endpoint issues:
+   /api/getUser - Should use REST convention: GET /api/users/:id
+   Missing authentication check
+   No input validation for user ID
+```
+</details>
+
+<details>
+<summary><strong>📚 api-docs-enforcer.py</strong> - API Documentation Guardian</summary>
+
+### What it does:
+Ensures every API endpoint is properly documented:
+- 📋 Requires Swagger/OpenAPI documentation for all endpoints
+- 📮 Enforces Postman collection updates
+- 🔐 Validates security documentation for internal APIs
+- 🔗 Ensures documentation links between Swagger and Postman
+
+### Why it's helpful:
+Good API documentation is crucial for team collaboration and API consumers. This hook ensures no endpoint goes undocumented, making your API easy to understand and use.
+
+### Example:
+```
+❌ API Documentation Required:
+   New endpoint: POST /api/users/bulk-import
+   Missing from swagger.json
+   No Postman collection entry
+   
+💡 Run 'npm run generate-api-docs' to auto-generate documentation
+```
+</details>
+
+<details>
+<summary><strong>🚫 no-mock-code.py</strong> - Real Code Enforcer</summary>
+
+### What it does:
+Prevents placeholder or mock code from entering production:
+- 📝 Detects Lorem ipsum text
+- 👤 Flags test users (John Doe, test@example.com)
+- 🔄 Identifies functions that always return the same value
+- 📌 Catches TODO comments without implementation
+- 💾 Finds hardcoded test data
+
+### Why it's helpful:
+Ensures your production code uses real, dynamic data. No more embarrassing moments where "John Doe" appears in production or where a function always returns the same test data.
+
+### Example:
+```
+❌ Mock/Placeholder Code Detected!
+   Line 45: Found "Lorem ipsum" - Replace with real content
+   Line 67: Static user data - Implement database query
+   Line 89: TODO without implementation - Complete the function
+```
+</details>
+
+<details>
+<summary><strong>🔒 secret-scanner.py</strong> - Security Guardian</summary>
+
+### What it does:
+Scans code for accidentally exposed secrets:
+- 🔑 Detects API keys and tokens
+- 🔐 Finds passwords and credentials
+- 📧 Identifies private keys and certificates
+- 🚨 Checks .gitignore includes sensitive files
+
+### Why it's helpful:
+Prevents the #1 security mistake: committing secrets to version control. Once a secret is in Git history, it's compromised forever. This hook is your last line of defense.
+
+### Example:
+```
+🚨 CRITICAL: Attempting to commit secrets!
+   Line 23: API key detected: sk_test_abc...
+   Line 45: Hardcoded password found
+   
+❌ Commit blocked - remove secrets and use environment variables
+```
+</details>
+
+<details>
+<summary><strong>🔄 env-sync-validator.py</strong> - Environment Config Keeper</summary>
+
+### What it does:
+Keeps your environment configuration files synchronized:
+- 📋 Ensures .env.example is updated when .env changes
+- 💡 Suggests safe placeholder values for examples
+- 🚫 Prevents real secrets in .env.example
+- 📝 Validates all team members know required variables
+
+### Why it's helpful:
+When team members pull your code, they need to know what environment variables to set. This hook ensures .env.example always reflects the current requirements.
+
+### Example:
+```
+❌ Environment sync issues:
+   New variable DATABASE_URL in .env
+   Missing from .env.example
+   
+💡 Add to .env.example:
+   DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+```
+</details>
+
+<details>
+<summary><strong>🚮 gitignore-enforcer.py</strong> - Repository Cleanliness Guard</summary>
+
+### What it does:
+Ensures .gitignore is properly configured:
+- 📁 Verifies .gitignore exists
+- 🚫 Blocks commits of sensitive files (.env, *.key, *.pem)
+- 🧪 Prevents test scripts and temporary files
+- 💾 Stops large files and backups from being committed
+
+### Why it's helpful:
+Keeps your repository clean and secure. Prevents accidentally committing files that should never be in version control, like private keys, large binaries, or temporary files.
+
+### Example:
+```
+🚨 FORBIDDEN FILES detected:
+   • .env (environment file)
+   • private-key.pem (private key)
+   • test-script.sh (test script)
+   
+💡 Add these patterns to .gitignore:
+   .env
+   *.pem
+   *test-script*
+```
+</details>
+
+<details>
+<summary><strong>📝 readme-update-validator.py</strong> - Documentation Reminder</summary>
+
+### What it does:
+Reminds you to update documentation when code changes:
+- 🆕 Detects new features and APIs
+- 📚 Suggests README sections to update
+- 🔧 Identifies configuration changes
+- 📦 Notices new dependencies
+
+### Why it's helpful:
+Documentation often becomes outdated because developers forget to update it. This hook provides gentle reminders to keep your README current with your code.
+
+### Example:
+```
+📚 README Update Reminder:
+   
+🆕 New files detected:
+   • api/users/bulk-import.js (API endpoint)
+   • components/UserBulkUpload.tsx (Component)
+   
+💡 Consider updating these README sections:
+   • API Documentation
+   • Features
+   • Usage Examples
+```
+</details>
+
+<details>
+<summary><strong>✅ validate-dart-task.py</strong> - Task Hierarchy Enforcer</summary>
+
+### What it does:
+Ensures proper task management in Dart:
+- 📊 Requires all tasks have a Phase parent
+- 🏷️ Validates task categorization
+- 🔗 Maintains project hierarchy
+- 📝 Enforces task metadata
+
+### Why it's helpful:
+Keeps project management organized by ensuring all tasks are properly categorized and tracked within the correct project phase.
+</details>
+
+<details>
+<summary><strong>📄 sync-docs-to-dart.py</strong> - Documentation Sync Reminder</summary>
+
+### What it does:
+Tracks when markdown files are created and reminds to sync with Dart:
+- 📝 Detects new .md file creation
+- 🔄 Tracks pending syncs
+- 📊 Maintains documentation consistency
+- 💾 Stores sync status
+
+### Why it's helpful:
+Ensures documentation stays synchronized across different systems, preventing information silos.
+</details>
+
+<details>
+<summary><strong>📊 log-commands.py</strong> - Command Historian</summary>
+
+### What it does:
+Logs all bash commands for audit and learning:
+- 🕒 Timestamps every command
+- 📁 Organizes logs by date
+- 📈 Tracks command frequency
+- 🔍 Enables command history search
+
+### Why it's helpful:
+Creates an audit trail of all commands run, useful for debugging, learning patterns, and security auditing.
+</details>
+
+<details>
+<summary><strong>🛠️ mcp-tool-enforcer.py</strong> - Tool Usage Optimizer</summary>
+
+### What it does:
+Suggests MCP tools when better alternatives exist:
+- 🔄 Detects suboptimal tool usage
+- 💡 Recommends MCP alternatives
+- ⚡ Improves workflow efficiency
+- 🎯 Promotes best practices
+
+### Why it's helpful:
+Helps developers use the most efficient tools available, improving productivity and code quality.
+</details>
+
+<details>
+<summary><strong>👋 session-end-summary.py</strong> - Session Wrap-up Assistant</summary>
+
+### What it does:
+Provides helpful reminders at session end:
+- 💾 Reminds about uncommitted changes
+- 📋 Lists pending tasks
+- 🔧 Shows workflow reminders
+- ✅ Ensures nothing is forgotten
+
+### Why it's helpful:
+Acts like a helpful assistant making sure you don't forget important tasks before ending your coding session.
+</details>
 
 ## Configuration
 
