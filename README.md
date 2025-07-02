@@ -1,3 +1,5 @@
+![Claude Code Hooks Banner](banner.png)
+
 # Claude Code Hooks
 
 A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) that enforce coding standards, maintain consistency, and automate workflow tasks across all projects.
@@ -10,6 +12,8 @@ A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) th
 - [Claude Code SDK](https://docs.anthropic.com/en/docs/claude-code/sdk)
 
 ## Features
+
+![Features Overview](banner-logo.png)
 
 ### 🔒 Quality Gates
 - **Pre-commit validation** - Run tests, linting, and TypeScript checks before commits
