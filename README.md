@@ -32,6 +32,13 @@ A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) th
 - **Session reminders** - End-of-session summaries and pending task reminders
 - **MCP tool suggestions** - Recommend MCP tools when alternatives are available
 
+### 🆕 New Advanced Hooks
+- **No mock code** - Prevents placeholder data (Lorem ipsum, test users, static returns)
+- **Secret scanner** - Detects API keys, passwords, tokens before they're committed
+- **Environment sync** - Keeps .env and .env.example synchronized
+- **Gitignore enforcer** - Prevents committing sensitive files and test scripts
+- **README validator** - Reminds to update documentation when features change
+
 ## Installation
 
 ### Quick Install
@@ -75,6 +82,12 @@ chmod +x install.sh
 | `duplicate-detector.py` | When creating files | Prevents duplicate code/routes |
 | `style-consistency.py` | When editing TSX/CSS | Enforces theme-aware styling |
 | `api-endpoint-verifier.py` | When editing API routes | Validates endpoint configuration |
+| `api-docs-enforcer.py` | Before commits & API edits | Enforces Swagger docs, Postman collections, API security |
+| `no-mock-code.py` | Before commits & file edits | Prevents placeholder/mock code in production |
+| `secret-scanner.py` | Before commits & file edits | Detects and prevents committing secrets |
+| `env-sync-validator.py` | When editing .env files | Keeps .env and .env.example in sync |
+| `gitignore-enforcer.py` | Before git add/commit | Ensures .gitignore exists and blocks forbidden files |
+| `readme-update-validator.py` | Before commits | Reminds to update README when features change |
 | `validate-dart-task.py` | Creating Dart tasks | Ensures proper task hierarchy |
 | `sync-docs-to-dart.py` | After creating .md files | Reminds to sync docs |
 | `log-commands.py` | Before bash commands | Logs all commands |

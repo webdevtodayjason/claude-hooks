@@ -19,6 +19,26 @@
           },
           {
             "type": "command",
+            "command": "~/.claude/hooks/api-docs-enforcer.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/no-mock-code.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/secret-scanner.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/gitignore-enforcer.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/readme-update-validator.py"
+          },
+          {
+            "type": "command",
             "command": "~/.claude/hooks/log-commands.py"
           },
           {
@@ -50,6 +70,22 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/api-endpoint-verifier.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/api-docs-enforcer.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/no-mock-code.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/secret-scanner.py"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/env-sync-validator.py"
           },
           {
             "type": "command",
