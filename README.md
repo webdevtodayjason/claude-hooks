@@ -3,7 +3,7 @@
 
 ![npm version](https://img.shields.io/npm/v/claude-code-hooks.svg)
 ![npm downloads](https://img.shields.io/npm/dm/claude-code-hooks.svg)
-![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)
+![Version](https://img.shields.io/badge/version-2.2.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Hooks](https://img.shields.io/badge/hooks-17-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.6+-blue.svg)

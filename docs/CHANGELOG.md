@@ -5,6 +5,22 @@ All notable changes to Claude Code Hooks will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2025-01-03
+
+### 🎨 UI Enhancements
+
+### Added
+- Visual status indicators in `list` command showing enabled/disabled/not installed hooks
+  - 🟢 Green dot for enabled hooks
+  - 🔴 Red dot for disabled hooks  
+  - ⚪ Gray circle for not installed hooks
+- Enhanced `status` command with detailed hook counts by state
+- Status indicators in interactive menu selections
+
+### Improved
+- Better visual feedback for hook management
+- Clearer understanding of which hooks are active
+
 ## [2.2.0] - 2025-01-03
 
 ### 🛠️ Complete Hook Management Suite

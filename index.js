@@ -291,15 +291,32 @@ async function promptToContinue() {
 }
 
 async function selectAndShowHookInfo() {
+  const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
+  
   const { hookName } = await inquirer.prompt([
     {
       type: 'list',
       name: 'hookName',
       message: 'Select a hook to learn more:',
-      choices: Object.keys(hooks).map(name => ({
-        name: `${name} - ${hooks[name].description}`,
-        value: name
-      }))
+      choices: Object.keys(hooks).map(name => {
+        // Check status
+        const hookPath = path.join(hooksDir, `${name}.py`);
+        const disabledPath = path.join(hooksDir, `${name}.py.disabled`);
+        
+        let status = '';
+        if (fs.existsSync(hookPath)) {
+          status = chalk.green('●') + ' ';
+        } else if (fs.existsSync(disabledPath)) {
+          status = chalk.red('●') + ' ';
+        } else {
+          status = chalk.gray('○') + ' ';
+        }
+        
+        return {
+          name: `${status}${name} - ${hooks[name].description}`,
+          value: name
+        };
+      })
     }
   ]);
 
@@ -430,9 +447,27 @@ async function selectAndRemoveHook() {
 
 function listHooks() {
   console.log(chalk.cyan('\nAvailable Claude Code Hooks:\n'));
+  
+  const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
+  
   Object.entries(hooks).forEach(([name, info]) => {
-    console.log(chalk.yellow(`  ${name}.py`.padEnd(35)) + chalk.gray(info.description));
+    // Check if hook is enabled or disabled
+    const hookPath = path.join(hooksDir, `${name}.py`);
+    const disabledPath = path.join(hooksDir, `${name}.py.disabled`);
+    
+    let status = '';
+    if (fs.existsSync(hookPath)) {
+      status = chalk.green('●') + ' '; // Green dot for enabled
+    } else if (fs.existsSync(disabledPath)) {
+      status = chalk.red('●') + ' '; // Red dot for disabled
+    } else {
+      status = chalk.gray('○') + ' '; // Gray circle for not installed
+    }
+    
+    console.log(`  ${status}${chalk.yellow(`${name}.py`.padEnd(33))} ${chalk.gray(info.description)}`);
   });
+  
+  console.log('\n' + chalk.gray('  ● Enabled  ● Disabled  ○ Not Installed'));
   console.log();
 }
 
@@ -484,9 +519,14 @@ async function showStatus() {
   if (fs.existsSync(hooksDir)) {
     console.log(chalk.green('✅ Hooks directory exists'));
     
-    // Count installed hooks
-    const installedHooks = fs.readdirSync(hooksDir).filter(f => f.endsWith('.py'));
-    console.log(chalk.gray(`   ${installedHooks.length} hooks installed`));
+    // Count hooks by status
+    const allFiles = fs.readdirSync(hooksDir);
+    const enabledHooks = allFiles.filter(f => f.endsWith('.py') && !f.endsWith('.disabled'));
+    const disabledHooks = allFiles.filter(f => f.endsWith('.py.disabled'));
+    
+    console.log(chalk.gray(`   ${chalk.green('●')} ${enabledHooks.length} hooks enabled`));
+    console.log(chalk.gray(`   ${chalk.red('●')} ${disabledHooks.length} hooks disabled`));
+    console.log(chalk.gray(`   ${enabledHooks.length + disabledHooks.length} total hooks installed`));
   } else {
     console.log(chalk.red('❌ Hooks directory not found'));
     console.log(chalk.gray('   Run "claude-hooks install" to set up'));

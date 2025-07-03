@@ -1,6 +1,6 @@
 {
   "name": "claude-code-hooks",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A comprehensive collection of hooks for Claude Code that enforce coding standards, maintain consistency, and automate workflow tasks",
   "main": "index.js",
   "bin": {
