@@ -1,7 +1,5 @@
 
-![Claude Code Hooks Banner](img/banner.png)
-
-# Claude Code Hooks
+# Claude Code Hooks by Sem
 
 ![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -9,6 +7,8 @@
 ![Python](https://img.shields.io/badge/python-3.6+-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
+
+![Claude Code Hooks](img/banner-logo.png)
 
 A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) that enforce coding standards, maintain consistency, and automate workflow tasks across all projects.
 
@@ -20,8 +20,6 @@ A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) th
 - [Claude Code SDK](https://docs.anthropic.com/en/docs/claude-code/sdk)
 
 ## Features
-
-![Features Overview](img/banner-logo.png)
 
 ### 🔒 Quality Gates
 - **Pre-commit validation** - Run tests, linting, and TypeScript checks before commits
