@@ -1,6 +1,6 @@
 {
   "name": "claude-code-hooks",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A comprehensive collection of hooks for Claude Code that enforce coding standards, maintain consistency, and automate workflow tasks",
   "main": "index.js",
   "bin": {
@@ -39,6 +39,11 @@
   "homepage": "https://github.com/webdevtodayjason/claude-hooks#readme",
   "engines": {
     "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "inquirer": "^8.2.6",
+    "ora": "^5.4.1"
   },
   "files": [
     "hooks/*.py",

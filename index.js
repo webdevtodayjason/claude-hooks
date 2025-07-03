@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
 /**
- * Claude Code Hooks - Main entry point
- * 
- * This package provides a collection of hooks for Claude Code to enforce
- * coding standards, maintain consistency, and automate workflow tasks.
+ * Claude Code Hooks - Enhanced CLI with interactive features
  */
 
 const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const chalk = require('chalk');
+const inquirer = require('inquirer');
+const ora = require('ora');
 
 // Hook metadata
 const hooks = {
@@ -101,9 +101,14 @@ const hooks = {
 };
 
 // Main function
-function main() {
+async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
+
+  // If no command, show interactive menu
+  if (!command) {
+    return showInteractiveMenu();
+  }
 
   switch (command) {
     case 'list':
@@ -113,16 +118,40 @@ function main() {
       if (args[1]) {
         showHookInfo(args[1]);
       } else {
-        console.error('Please specify a hook name');
+        console.error(chalk.red('Please specify a hook name'));
         process.exit(1);
       }
       break;
     case 'install':
-      console.log('To install hooks, run: ./install.sh');
-      console.log('Or copy the hooks you want to ~/.claude/hooks/');
+      await installHooks();
       break;
     case 'test':
       runTests();
+      break;
+    case 'status':
+      await showStatus();
+      break;
+    case 'enable':
+      if (args[1]) {
+        await enableHook(args[1]);
+      } else {
+        console.error(chalk.red('Please specify a hook name'));
+        process.exit(1);
+      }
+      break;
+    case 'disable':
+      if (args[1]) {
+        await disableHook(args[1]);
+      } else {
+        console.error(chalk.red('Please specify a hook name'));
+        process.exit(1);
+      }
+      break;
+    case 'init':
+      await initProject();
+      break;
+    case 'doctor':
+      await runDoctor();
       break;
     case '--version':
     case '-v':
@@ -130,88 +159,329 @@ function main() {
       break;
     case '--help':
     case '-h':
-    case undefined:
       showHelp();
       break;
     default:
-      console.error(`Unknown command: ${command}`);
+      console.error(chalk.red(`Unknown command: ${command}`));
       showHelp();
       process.exit(1);
   }
 }
 
+// Interactive menu
+async function showInteractiveMenu() {
+  console.log(chalk.cyan('\n🪝 Claude Code Hooks Interactive Menu\n'));
+
+  const { action } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'action',
+      message: 'What would you like to do?',
+      choices: [
+        { name: '📦 Install hooks to Claude Code', value: 'install' },
+        { name: '📋 List all available hooks', value: 'list' },
+        { name: '🔍 Get info about a specific hook', value: 'info' },
+        { name: '✅ Check installation status', value: 'status' },
+        { name: '🧪 Run tests', value: 'test' },
+        { name: '🩺 Run diagnostics (doctor)', value: 'doctor' },
+        { name: '🚀 Initialize project hooks', value: 'init' },
+        new inquirer.Separator(),
+        { name: '❌ Exit', value: 'exit' }
+      ]
+    }
+  ]);
+
+  switch (action) {
+    case 'install':
+      await installHooks();
+      break;
+    case 'list':
+      listHooks();
+      await promptToContinue();
+      break;
+    case 'info':
+      await selectAndShowHookInfo();
+      break;
+    case 'status':
+      await showStatus();
+      await promptToContinue();
+      break;
+    case 'test':
+      runTests();
+      break;
+    case 'doctor':
+      await runDoctor();
+      await promptToContinue();
+      break;
+    case 'init':
+      await initProject();
+      break;
+    case 'exit':
+      console.log(chalk.green('\nThanks for using Claude Code Hooks! 👋\n'));
+      process.exit(0);
+  }
+
+  // Return to menu unless exited
+  if (action !== 'exit') {
+    await showInteractiveMenu();
+  }
+}
+
+async function promptToContinue() {
+  await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'continue',
+      message: 'Press Enter to continue...'
+    }
+  ]);
+}
+
+async function selectAndShowHookInfo() {
+  const { hookName } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'hookName',
+      message: 'Select a hook to learn more:',
+      choices: Object.keys(hooks).map(name => ({
+        name: `${name} - ${hooks[name].description}`,
+        value: name
+      }))
+    }
+  ]);
+
+  showHookInfo(hookName);
+  await promptToContinue();
+}
+
 function listHooks() {
-  console.log('Available Claude Code Hooks:\n');
+  console.log(chalk.cyan('\nAvailable Claude Code Hooks:\n'));
   Object.entries(hooks).forEach(([name, info]) => {
-    console.log(`  ${name.padEnd(30)} ${info.description}`);
+    console.log(chalk.yellow(`  ${name}.py`.padEnd(35)) + chalk.gray(info.description));
   });
+  console.log();
 }
 
 function showHookInfo(hookName) {
   const hook = hooks[hookName];
   if (!hook) {
-    console.error(`Hook not found: ${hookName}`);
-    console.log('Run "claude-hooks list" to see available hooks');
-    process.exit(1);
+    console.error(chalk.red(`Hook not found: ${hookName}`));
+    console.log(chalk.gray('Run "claude-hooks list" to see available hooks'));
+    return;
   }
 
-  console.log(`\nHook: ${hookName}`);
-  console.log(`Description: ${hook.description}`);
-  console.log(`Event: ${hook.event}`);
-  console.log(`Tools: ${hook.tools.length > 0 ? hook.tools.join(', ') : 'All tools'}`);
+  console.log(chalk.cyan(`\nHook: ${hookName}.py`));
+  console.log(chalk.gray('─'.repeat(50)));
+  console.log(`${chalk.bold('Description:')} ${hook.description}`);
+  console.log(`${chalk.bold('Event:')} ${hook.event}`);
+  console.log(`${chalk.bold('Tools:')} ${hook.tools.length > 0 ? hook.tools.join(', ') : 'All tools'}`);
   
-  // Try to read the hook file for more details
   const hookPath = path.join(__dirname, 'hooks', `${hookName}.py`);
   if (fs.existsSync(hookPath)) {
-    console.log('\nTo see implementation details, check:');
-    console.log(`  ${hookPath}`);
+    console.log(`${chalk.bold('Location:')} ${hookPath}`);
+  }
+  console.log();
+}
+
+async function installHooks() {
+  const spinner = ora('Installing hooks to Claude Code directory...').start();
+  
+  try {
+    // Hide spinner output during install script
+    spinner.stop();
+    execSync('./install.sh', { stdio: 'inherit' });
+    spinner.succeed('Hooks installed successfully!');
+    console.log(chalk.green('\n✅ All hooks have been copied to ~/.claude/hooks/'));
+    console.log(chalk.gray('Restart Claude Code for the hooks to take effect.\n'));
+  } catch (error) {
+    spinner.fail('Installation failed');
+    console.error(chalk.red('Error during installation:'), error.message);
+    process.exit(1);
+  }
+}
+
+async function showStatus() {
+  console.log(chalk.cyan('\n🔍 Checking Claude Code Hooks Status...\n'));
+  
+  const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
+  const settingsFile = path.join(process.env.HOME, '.claude', 'settings.json');
+  
+  // Check hooks directory
+  if (fs.existsSync(hooksDir)) {
+    console.log(chalk.green('✅ Hooks directory exists'));
+    
+    // Count installed hooks
+    const installedHooks = fs.readdirSync(hooksDir).filter(f => f.endsWith('.py'));
+    console.log(chalk.gray(`   ${installedHooks.length} hooks installed`));
+  } else {
+    console.log(chalk.red('❌ Hooks directory not found'));
+    console.log(chalk.gray('   Run "claude-hooks install" to set up'));
+  }
+  
+  // Check settings file
+  if (fs.existsSync(settingsFile)) {
+    console.log(chalk.green('✅ Settings file exists'));
+  } else {
+    console.log(chalk.yellow('⚠️  Settings file not found'));
+    console.log(chalk.gray('   Hooks may not be configured'));
+  }
+  
+  console.log();
+}
+
+async function enableHook(hookName) {
+  // TODO: Implement hook enable functionality
+  console.log(chalk.yellow(`Enabling ${hookName}... (Feature coming soon)`));
+}
+
+async function disableHook(hookName) {
+  // TODO: Implement hook disable functionality
+  console.log(chalk.yellow(`Disabling ${hookName}... (Feature coming soon)`));
+}
+
+async function initProject() {
+  console.log(chalk.cyan('\n🚀 Initializing Claude Code Hooks for this project...\n'));
+  
+  const { setupType } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'setupType',
+      message: 'How would you like to configure hooks for this project?',
+      choices: [
+        { name: 'Use recommended hooks for general development', value: 'general' },
+        { name: 'Use strict hooks for production code', value: 'strict' },
+        { name: 'Select hooks manually', value: 'manual' },
+        { name: 'Skip project configuration', value: 'skip' }
+      ]
+    }
+  ]);
+  
+  if (setupType === 'skip') {
+    return;
+  }
+  
+  // Create .claude directory in project
+  const projectClaudeDir = path.join(process.cwd(), '.claude');
+  if (!fs.existsSync(projectClaudeDir)) {
+    fs.mkdirSync(projectClaudeDir, { recursive: true });
+  }
+  
+  console.log(chalk.green(`\n✅ Created ${projectClaudeDir}`));
+  console.log(chalk.gray('Add project-specific configuration here.\n'));
+}
+
+async function runDoctor() {
+  console.log(chalk.cyan('\n🩺 Running Claude Code Hooks Diagnostics...\n'));
+  
+  const spinner = ora('Checking installation...').start();
+  
+  const issues = [];
+  const suggestions = [];
+  
+  // Check Node.js version
+  const nodeVersion = process.version;
+  if (nodeVersion < 'v14.0.0') {
+    issues.push('Node.js version is below v14.0.0');
+    suggestions.push('Update Node.js to v14.0.0 or higher');
+  }
+  
+  // Check hooks directory
+  const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
+  if (!fs.existsSync(hooksDir)) {
+    issues.push('Hooks directory not found');
+    suggestions.push('Run "claude-hooks install" to create it');
+  }
+  
+  // Check Python
+  try {
+    execSync('python3 --version', { stdio: 'pipe' });
+  } catch {
+    issues.push('Python 3 not found');
+    suggestions.push('Install Python 3.6 or higher');
+  }
+  
+  // Check for settings.json
+  const settingsFile = path.join(process.env.HOME, '.claude', 'settings.json');
+  if (!fs.existsSync(settingsFile)) {
+    issues.push('Claude Code settings file not found');
+    suggestions.push('Copy settings.example.json to ~/.claude/settings.json');
+  }
+  
+  spinner.stop();
+  
+  if (issues.length === 0) {
+    console.log(chalk.green('✅ No issues found! Everything looks good.\n'));
+  } else {
+    console.log(chalk.red(`❌ Found ${issues.length} issue(s):\n`));
+    issues.forEach((issue, i) => {
+      console.log(chalk.red(`  ${i + 1}. ${issue}`));
+      console.log(chalk.gray(`     → ${suggestions[i]}`));
+    });
+    console.log();
   }
 }
 
 function runTests() {
-  console.log('Running tests...\n');
+  console.log(chalk.cyan('\nRunning tests...\n'));
   try {
     execSync('./tests/run_tests.sh', { stdio: 'inherit' });
   } catch (error) {
-    console.error('Tests failed');
+    console.error(chalk.red('Tests failed'));
     process.exit(1);
   }
 }
 
 function showVersion() {
   const packageJson = require('./package.json');
-  console.log(`claude-code-hooks v${packageJson.version}`);
+  console.log(chalk.cyan(`claude-code-hooks v${packageJson.version}`));
 }
 
 function showHelp() {
   console.log(`
-Claude Code Hooks - Enhance your Claude Code workflow
+${chalk.cyan('Claude Code Hooks')} - Enhance your Claude Code workflow
 
-Usage: claude-hooks <command> [options]
+${chalk.bold('Usage:')} claude-hooks [command] [options]
 
-Commands:
-  list              List all available hooks
-  info <hook>       Show detailed information about a specific hook
-  install           Show installation instructions
-  test              Run the test suite
+${chalk.bold('Commands:')}
+  ${chalk.yellow('(no command)')}      Launch interactive menu
+  ${chalk.yellow('list')}              List all available hooks
+  ${chalk.yellow('info <hook>')}       Show detailed information about a specific hook
+  ${chalk.yellow('install')}           Install hooks to Claude Code directory
+  ${chalk.yellow('status')}            Check installation status
+  ${chalk.yellow('enable <hook>')}     Enable a specific hook (coming soon)
+  ${chalk.yellow('disable <hook>')}    Disable a specific hook (coming soon)
+  ${chalk.yellow('init')}              Initialize hooks for current project
+  ${chalk.yellow('doctor')}            Run diagnostics to check setup
+  ${chalk.yellow('test')}              Run the test suite
 
-Options:
-  -h, --help        Show this help message
-  -v, --version     Show version number
+${chalk.bold('Options:')}
+  ${chalk.yellow('-h, --help')}        Show this help message
+  ${chalk.yellow('-v, --version')}     Show version number
 
-Examples:
-  claude-hooks list
+${chalk.bold('Examples:')}
+  ${chalk.gray('# Launch interactive menu')}
+  claude-hooks
+
+  ${chalk.gray('# Install hooks')}
+  claude-hooks install
+
+  ${chalk.gray('# Get info about a hook')}
   claude-hooks info secret-scanner
-  claude-hooks test
 
-For more information, visit:
-https://github.com/webdevtodayjason/claude-hooks
+  ${chalk.gray('# Check if everything is set up correctly')}
+  claude-hooks doctor
+
+${chalk.gray('For more information, visit:')}
+${chalk.cyan('https://github.com/webdevtodayjason/claude-hooks')}
 `);
 }
 
 // Run main function if executed directly
 if (require.main === module) {
-  main();
+  main().catch(err => {
+    console.error(chalk.red('Error:'), err.message);
+    process.exit(1);
+  });
 }
 
 // Export for programmatic use

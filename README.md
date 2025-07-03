@@ -1,9 +1,11 @@
 
 # Claude Code Hooks by Sem
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
+![npm version](https://img.shields.io/npm/v/claude-code-hooks.svg)
+![npm downloads](https://img.shields.io/npm/dm/claude-code-hooks.svg)
+![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Hooks](https://img.shields.io/badge/hooks-16-orange.svg)
+![Hooks](https://img.shields.io/badge/hooks-17-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.6+-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
@@ -90,23 +92,107 @@ chmod +x install.sh
 
 ## CLI Usage
 
-When installed via npm, you get access to the `claude-hooks` CLI:
+When installed via npm, you get access to the powerful `claude-hooks` CLI:
+
+### Available Commands
 
 ```bash
-# List all available hooks
+# Launch interactive menu (NEW!)
+claude-hooks
+
+# Install hooks to Claude Code directory
+claude-hooks install
+claude-hooks-install  # Also available as separate command
+
+# List all available hooks with descriptions
 claude-hooks list
 
 # Get detailed information about a specific hook
-claude-hooks info secret-scanner
+claude-hooks info <hook-name>
+# Example: claude-hooks info secret-scanner
 
-# Run the test suite
+# Check installation status (NEW!)
+claude-hooks status
+
+# Run diagnostics to check setup (NEW!)
+claude-hooks doctor
+
+# Initialize hooks for current project (NEW!)
+claude-hooks init
+
+# Run the comprehensive test suite
 claude-hooks test
 
-# Show version
+# Show version information
 claude-hooks --version
 
-# Show help
+# Display help and usage information
 claude-hooks --help
+```
+
+### Interactive Menu (NEW!)
+
+Running `claude-hooks` without any arguments launches an interactive menu:
+
+```bash
+$ claude-hooks
+
+🪝 Claude Code Hooks Interactive Menu
+
+? What would you like to do? (Use arrow keys)
+❯ 📦 Install hooks to Claude Code
+  📋 List all available hooks
+  🔍 Get info about a specific hook
+  ✅ Check installation status
+  🧪 Run tests
+  🩺 Run diagnostics (doctor)
+  🚀 Initialize project hooks
+  ──────────────
+  ❌ Exit
+```
+
+### Examples
+
+```bash
+# See what hooks are available
+$ claude-hooks list
+Available Claude Code Hooks:
+
+  pre-commit-validator.py        Enforces coding standards before commits
+  validate-git-commit.py         Validates commit message format
+  secret-scanner.py              Detects and blocks secrets
+  no-mock-code.py               Prevents placeholder/mock code
+  ... and more
+
+# Check if everything is set up correctly
+$ claude-hooks doctor
+
+🩺 Running Claude Code Hooks Diagnostics...
+
+✅ No issues found! Everything looks good.
+
+# Check installation status
+$ claude-hooks status
+
+🔍 Checking Claude Code Hooks Status...
+
+✅ Hooks directory exists
+   17 hooks installed
+✅ Settings file exists
+
+# Get details about a specific hook
+$ claude-hooks info secret-scanner
+Hook: secret-scanner.py
+Description: Detects and blocks secrets
+Event: before_tool_call
+Tools: Write, MultiEdit, Edit
+
+# Run tests to ensure hooks are working
+$ claude-hooks test
+Running Claude Code Hooks Tests...
+==================================
+✅ All hooks are executable
+✅ All 17 hooks passed tests!
 ```
 
 ## Hooks Overview

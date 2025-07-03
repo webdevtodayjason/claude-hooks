@@ -5,6 +5,41 @@ All notable changes to Claude Code Hooks will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-01-03
+
+### 🎨 Enhanced CLI Experience
+
+This release transforms the CLI into a powerful, interactive tool with beautiful UI and helpful diagnostics.
+
+### Added
+
+#### 🆕 Interactive Features
+- **Interactive Menu** - Run `claude-hooks` without arguments to launch a beautiful menu
+- **Status Command** - `claude-hooks status` checks installation and configuration
+- **Doctor Command** - `claude-hooks doctor` runs diagnostics and suggests fixes
+- **Init Command** - `claude-hooks init` helps set up project-specific hooks
+
+#### 🎨 UI Enhancements
+- Colored output with chalk for better readability
+- Loading spinners with ora for long operations
+- Interactive prompts with inquirer for user input
+- Emojis and icons for visual feedback
+
+#### 📚 Documentation
+- Expanded CLI usage documentation
+- Interactive menu examples
+- npm badges for version and downloads
+
+### Changed
+- Enhanced error messages with helpful suggestions
+- Improved command help with examples
+- Better formatting for list and info commands
+
+### Dependencies
+- chalk ^4.1.2 - Terminal string styling
+- inquirer ^8.2.6 - Interactive command line prompts
+- ora ^5.4.1 - Elegant terminal spinners
+
 ## [2.0.0] - 2025-01-03
 
 ### 🎉 Major Release - Comprehensive Hook Collection
