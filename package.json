@@ -40,13 +40,18 @@
     "node": ">=14.0.0"
   },
   "files": [
-    "*.py",
+    "hooks/*.py",
     "install.sh",
     "index.js",
     "settings.example.json",
     "README.md",
     "LICENSE",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    ".claude/*",
+    "docs/*",
+    "examples/*"
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

@@ -9,7 +9,7 @@ mkdir -p ~/.claude/hooks
 
 # Copy all Python hook files
 echo "Copying hook files..."
-cp *.py ~/.claude/hooks/
+cp hooks/*.py ~/.claude/hooks/
 chmod +x ~/.claude/hooks/*.py
 
 # Copy documentation

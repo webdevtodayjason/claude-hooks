@@ -161,7 +161,7 @@ function showHookInfo(hookName) {
   console.log(`Tools: ${hook.tools.length > 0 ? hook.tools.join(', ') : 'All tools'}`);
   
   // Try to read the hook file for more details
-  const hookPath = path.join(__dirname, `${hookName}.py`);
+  const hookPath = path.join(__dirname, 'hooks', `${hookName}.py`);
   if (fs.existsSync(hookPath)) {
     console.log('\nTo see implementation details, check:');
     console.log(`  ${hookPath}`);

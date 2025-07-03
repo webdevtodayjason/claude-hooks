@@ -83,7 +83,7 @@ chmod +x install.sh
 
 2. Copy all Python hooks:
    ```bash
-   cp *.py ~/.claude/hooks/
+   cp hooks/*.py ~/.claude/hooks/
    chmod +x ~/.claude/hooks/*.py
    ```
 
