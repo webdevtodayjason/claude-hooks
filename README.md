@@ -48,7 +48,21 @@ A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) th
 
 ## Installation
 
-### Quick Install
+### Install from GitHub Packages (npm)
+
+```bash
+# 1. Create a personal access token on GitHub with read:packages scope
+# 2. Login to GitHub Packages npm registry
+npm login --registry=https://npm.pkg.github.com --scope=@webdevtodayjason
+
+# 3. Install the package
+npm install -g @webdevtodayjason/claude-code-hooks
+
+# 4. Run the installation script to copy hooks to Claude Code directory
+claude-hooks-install
+```
+
+### Install from Source
 
 ```bash
 # Clone the repository
@@ -78,6 +92,27 @@ chmod +x install.sh
    - If not, copy `settings.example.json` to `~/.claude/settings.json`
 
 4. Restart Claude Code for the hooks to take effect
+
+## CLI Usage
+
+When installed via npm, you get access to the `claude-hooks` CLI:
+
+```bash
+# List all available hooks
+claude-hooks list
+
+# Get detailed information about a specific hook
+claude-hooks info secret-scanner
+
+# Run the test suite
+claude-hooks test
+
+# Show version
+claude-hooks --version
+
+# Show help
+claude-hooks --help
+```
 
 ## Hooks Overview
 

@@ -1,0 +1,62 @@
+# Test files
+test_*.py
+__pycache__/
+*.pyc
+
+# Development files
+.git/
+.github/
+.gitignore
+
+# Documentation source files
+docs/
+
+# CI/CD files
+.travis.yml
+.gitlab-ci.yml
+azure-pipelines.yml
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Example configuration
+settings.json
+
+# Development scripts
+dev-*.sh
+
+# Coverage reports
+coverage/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+env/
+.env
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Keep these files
+!*.py
+!install.sh
+!run_tests.sh
+!index.js
+!package.json
+!README.md
+!LICENSE
+!CHANGELOG.md
+!CONTRIBUTING.md
+!CODE_OF_CONDUCT.md
+!settings.example.json

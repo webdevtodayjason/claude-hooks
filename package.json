@@ -1,19 +1,30 @@
 {
-  "name": "claude-code-hooks",
+  "name": "@webdevtodayjason/claude-code-hooks",
   "version": "2.0.0",
-  "description": "A comprehensive collection of hooks for Claude Code",
+  "description": "A comprehensive collection of hooks for Claude Code that enforce coding standards, maintain consistency, and automate workflow tasks",
+  "main": "index.js",
+  "bin": {
+    "claude-hooks": "./index.js",
+    "claude-hooks-install": "./install.sh"
+  },
   "scripts": {
     "test": "./run_tests.sh",
     "test:verbose": "python3 test_hooks.py -v",
     "lint": "echo 'No linting configured yet'",
-    "install-hooks": "./install.sh"
+    "install-hooks": "./install.sh",
+    "postinstall": "echo 'Run claude-hooks-install to set up hooks'"
   },
   "keywords": [
     "claude",
     "claude-code",
     "hooks",
     "development",
-    "automation"
+    "automation",
+    "code-quality",
+    "linting",
+    "git-hooks",
+    "workflow",
+    "productivity"
   ],
   "author": "webdevtodayjason",
   "license": "MIT",
@@ -24,5 +35,20 @@
   "bugs": {
     "url": "https://github.com/webdevtodayjason/claude-hooks/issues"
   },
-  "homepage": "https://github.com/webdevtodayjason/claude-hooks#readme"
+  "homepage": "https://github.com/webdevtodayjason/claude-hooks#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "*.py",
+    "install.sh",
+    "index.js",
+    "settings.example.json",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }
