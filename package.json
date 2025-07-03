@@ -1,5 +1,5 @@
 {
-  "name": "@webdevtodayjason/claude-code-hooks",
+  "name": "claude-code-hooks",
   "version": "2.0.0",
   "description": "A comprehensive collection of hooks for Claude Code that enforce coding standards, maintain consistency, and automate workflow tasks",
   "main": "index.js",
@@ -51,8 +51,5 @@
     "docs/*",
     "examples/*",
     "tests/*"
-  ],
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  }
+  ]
 }
