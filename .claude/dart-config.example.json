@@ -1,0 +1,6 @@
+{
+  "enable_doc_sync": true,
+  "default_docs_folder": "holace/Docs",
+  "workspace": "holace",
+  "dartboard": "holace/Tasks"
+}

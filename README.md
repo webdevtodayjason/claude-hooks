@@ -491,6 +491,8 @@ Acts like a helpful assistant making sure you don't forget important tasks befor
 
 ## Configuration
 
+### Global Hook Configuration
+
 Hooks are configured in `~/.claude/settings.json`:
 
 ```json
@@ -504,6 +506,36 @@ Hooks are configured in `~/.claude/settings.json`:
 ```
 
 See `settings.example.json` for the complete configuration.
+
+### Project-Specific Configuration
+
+Some hooks now support project-specific configuration to avoid cross-project interference:
+
+#### Session End Summary Hook
+Create `.claude/session-summary.json` in your project:
+```json
+{
+  "show_dart_reminders": true,
+  "show_git_reminders": true,
+  "custom_reminders": [
+    "Run tests before committing",
+    "Update documentation"
+  ]
+}
+```
+
+#### Documentation Sync Hook
+Create `.claude/dart-config.json` in your project:
+```json
+{
+  "enable_doc_sync": true,
+  "default_docs_folder": "workspace/Docs",
+  "workspace": "your-workspace",
+  "dartboard": "workspace/Tasks"
+}
+```
+
+See [Project-Aware Hooks Documentation](docs/project-aware-hooks.md) for detailed configuration options.
 
 ## Customization
 

@@ -1,0 +1,10 @@
+{
+  "show_dart_reminders": true,
+  "show_git_reminders": true,
+  "custom_reminders": [
+    "All new tasks must have a Phase parent",
+    "Run tests before committing (enforced by hooks)",
+    "Use theme-aware CSS classes",
+    "Extend existing database tables instead of creating new ones"
+  ]
+}

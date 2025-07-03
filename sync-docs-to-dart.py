@@ -8,10 +8,57 @@ import json
 import os
 import sys
 from pathlib import Path
+from datetime import datetime
+
+
+def get_project_root():
+    """Get the current project root directory."""
+    try:
+        # Try to find git root
+        result = os.popen('git rev-parse --show-toplevel 2>/dev/null').read().strip()
+        if result:
+            return Path(result)
+    except:
+        pass
+    # Fallback to current directory
+    return Path.cwd()
+
+
+def is_dart_enabled():
+    """Check if Dart sync is enabled for this project."""
+    project_root = get_project_root()
+    
+    # Check for .claude/dart-config.json
+    dart_config = project_root / '.claude' / 'dart-config.json'
+    if dart_config.exists():
+        try:
+            with open(dart_config, 'r') as f:
+                config = json.load(f)
+                return config.get('enable_doc_sync', True)
+        except:
+            pass
+    
+    # Check for .claude/sync-config.json
+    sync_config = project_root / '.claude' / 'sync-config.json'
+    if sync_config.exists():
+        try:
+            with open(sync_config, 'r') as f:
+                config = json.load(f)
+                return config.get('dart_sync_enabled', False)
+        except:
+            pass
+    
+    # For backward compatibility and testing, enable by default if no config exists
+    # Projects can explicitly disable by creating a config file
+    return True
 
 
 def should_sync_to_dart(file_path):
     """Determine if a file should be synced to Dart."""
+    # First check if Dart sync is enabled
+    if not is_dart_enabled():
+        return False
+    
     # Skip files in specific directories
     skip_dirs = ['.git', 'node_modules', '.next', 'dist', 'build', '.claude']
     path_parts = Path(file_path).parts
@@ -74,11 +121,22 @@ def create_dart_sync_reminder(file_path, content):
     sync_info = {
         "file_path": file_path,
         "title": get_dart_doc_title(file_path),
-        "content_preview": content[:200] + "..." if len(content) > 200 else content
+        "content_preview": content[:200] + "..." if len(content) > 200 else content,
+        "timestamp": datetime.now().isoformat()
     }
     
-    # Log the sync requirement
-    log_file = Path.home() / '.claude' / 'hooks' / 'pending-dart-syncs.json'
+    # Log the sync requirement in project directory
+    project_root = get_project_root()
+    claude_dir = project_root / '.claude'
+    
+    # Create .claude directory if it doesn't exist
+    try:
+        claude_dir.mkdir(exist_ok=True)
+    except:
+        # Fallback to home directory if can't create in project
+        claude_dir = Path.home() / '.claude' / 'hooks'
+    
+    log_file = claude_dir / 'pending-dart-syncs.json'
     pending_syncs = []
     
     try:
@@ -88,7 +146,12 @@ def create_dart_sync_reminder(file_path, content):
     except:
         pass
     
+    # Add new sync info
     pending_syncs.append(sync_info)
+    
+    # Keep only recent items (last 50)
+    if len(pending_syncs) > 50:
+        pending_syncs = pending_syncs[-50:]
     
     try:
         with open(log_file, 'w') as f:
@@ -96,10 +159,24 @@ def create_dart_sync_reminder(file_path, content):
     except:
         pass
     
+    # Load project-specific Dart configuration
+    dart_config = project_root / '.claude' / 'dart-config.json'
+    folder_hint = "your preferred folder"
+    
+    if dart_config.exists():
+        try:
+            with open(dart_config, 'r') as f:
+                config = json.load(f)
+                default_folder = config.get('default_docs_folder')
+                if default_folder:
+                    folder_hint = f"folder: {default_folder}"
+        except:
+            pass
+    
     # Provide feedback
     print(f"📝 Document '{sync_info['title']}' can be synced to Dart", file=sys.stderr)
     print(f"   💡 Use 'mcp__dart__create_doc' to sync documentation", file=sys.stderr)
-    print(f"   📁 Choose your preferred folder in Dart", file=sys.stderr)
+    print(f"   📁 Choose {folder_hint}", file=sys.stderr)
     
     return output
 

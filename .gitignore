@@ -24,6 +24,13 @@ __pycache__/
 pending-dart-syncs.json
 command-stats.json
 
+# Project-specific hook configurations (but keep examples)
+.claude/dart-config.json
+.claude/session-summary.json
+.claude/sync-config.json
+# Don't ignore example files
+!.claude/*.example.json
+
 # IDE files
 .vscode/
 .idea/
