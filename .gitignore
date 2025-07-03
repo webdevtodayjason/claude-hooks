@@ -1,3 +1,6 @@
+# NPM config with tokens
+.npmrc
+
 # Log files
 *.log
 commands-*.log
