@@ -608,3 +608,7 @@ Created for the Claude Code community to enhance productivity and maintain code 
 <p align="center">
   <img src="img/semfreak-hooks-150x150.png" alt="Sem Hooks Logo" />
 </p>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=webdevtodayjason/claude-hooks&type=Date)](https://star-history.com/#webdevtodayjason/claude-hooks&Date)
