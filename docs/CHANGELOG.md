@@ -5,6 +5,31 @@ All notable changes to Claude Code Hooks will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-01-03
+
+### 🛠️ Complete Hook Management Suite
+
+This release adds comprehensive hook management capabilities to the CLI.
+
+### Added
+
+#### 🎯 Hook Management Commands
+- **Enable/Disable** - `claude-hooks enable/disable <hook>` toggles hooks on/off
+- **Create** - `claude-hooks create <name>` generates new custom hooks with templates
+- **Edit** - `claude-hooks edit <hook>` opens hooks in your preferred editor
+- **Remove** - `claude-hooks remove <hook>` permanently deletes hooks
+- **Config** - `claude-hooks config` edits Claude Code settings.json
+
+#### 🎨 Enhanced Interactive Menu
+- Added "Hook Management" section with all new commands
+- Added "Configuration" section for settings and project setup
+- Better organization with separators
+
+### Changed
+- Enable/disable commands now fully functional (no longer "coming soon")
+- Interactive menu now includes all management options
+- Better error handling for all commands
+
 ## [2.1.0] - 2025-01-03
 
 ### 🎨 Enhanced CLI Experience

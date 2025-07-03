@@ -153,6 +153,33 @@ async function main() {
     case 'doctor':
       await runDoctor();
       break;
+    case 'create':
+      if (args[1]) {
+        await createHook(args[1]);
+      } else {
+        console.error(chalk.red('Please specify a hook name'));
+        process.exit(1);
+      }
+      break;
+    case 'edit':
+      if (args[1]) {
+        await editHook(args[1]);
+      } else {
+        console.error(chalk.red('Please specify a hook name'));
+        process.exit(1);
+      }
+      break;
+    case 'remove':
+      if (args[1]) {
+        await removeHook(args[1]);
+      } else {
+        console.error(chalk.red('Please specify a hook name'));
+        process.exit(1);
+      }
+      break;
+    case 'config':
+      await configureSettings();
+      break;
     case '--version':
     case '-v':
       showVersion();
@@ -182,9 +209,17 @@ async function showInteractiveMenu() {
         { name: '📋 List all available hooks', value: 'list' },
         { name: '🔍 Get info about a specific hook', value: 'info' },
         { name: '✅ Check installation status', value: 'status' },
-        { name: '🧪 Run tests', value: 'test' },
-        { name: '🩺 Run diagnostics (doctor)', value: 'doctor' },
+        new inquirer.Separator('─── Hook Management ───'),
+        { name: '🟢 Enable a hook', value: 'enable' },
+        { name: '🔴 Disable a hook', value: 'disable' },
+        { name: '➕ Create new hook', value: 'create' },
+        { name: '✏️  Edit existing hook', value: 'edit' },
+        { name: '🗑️  Remove a hook', value: 'remove' },
+        new inquirer.Separator('─── Configuration ───'),
+        { name: '⚙️  Configure settings', value: 'config' },
         { name: '🚀 Initialize project hooks', value: 'init' },
+        { name: '🩺 Run diagnostics (doctor)', value: 'doctor' },
+        { name: '🧪 Run tests', value: 'test' },
         new inquirer.Separator(),
         { name: '❌ Exit', value: 'exit' }
       ]
@@ -205,6 +240,24 @@ async function showInteractiveMenu() {
     case 'status':
       await showStatus();
       await promptToContinue();
+      break;
+    case 'enable':
+      await selectAndEnableHook();
+      break;
+    case 'disable':
+      await selectAndDisableHook();
+      break;
+    case 'create':
+      await promptAndCreateHook();
+      break;
+    case 'edit':
+      await selectAndEditHook();
+      break;
+    case 'remove':
+      await selectAndRemoveHook();
+      break;
+    case 'config':
+      await configureSettings();
       break;
     case 'test':
       runTests();
@@ -251,6 +304,127 @@ async function selectAndShowHookInfo() {
   ]);
 
   showHookInfo(hookName);
+  await promptToContinue();
+}
+
+async function selectAndEnableHook() {
+  const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
+  const disabledHooks = fs.readdirSync(hooksDir)
+    .filter(f => f.endsWith('.py.disabled'))
+    .map(f => f.replace('.py.disabled', ''));
+  
+  if (disabledHooks.length === 0) {
+    console.log(chalk.yellow('\nNo disabled hooks found.'));
+    await promptToContinue();
+    return;
+  }
+  
+  const { hookName } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'hookName',
+      message: 'Select a hook to enable:',
+      choices: disabledHooks
+    }
+  ]);
+  
+  await enableHook(hookName);
+  await promptToContinue();
+}
+
+async function selectAndDisableHook() {
+  const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
+  const enabledHooks = fs.readdirSync(hooksDir)
+    .filter(f => f.endsWith('.py') && !f.endsWith('.disabled'))
+    .map(f => f.replace('.py', ''));
+  
+  if (enabledHooks.length === 0) {
+    console.log(chalk.yellow('\nNo enabled hooks found.'));
+    await promptToContinue();
+    return;
+  }
+  
+  const { hookName } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'hookName',
+      message: 'Select a hook to disable:',
+      choices: enabledHooks
+    }
+  ]);
+  
+  await disableHook(hookName);
+  await promptToContinue();
+}
+
+async function promptAndCreateHook() {
+  const { hookName } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'hookName',
+      message: 'Enter name for new hook (without .py):',
+      validate: (input) => {
+        if (!input) return 'Hook name is required';
+        if (!/^[a-z0-9-_]+$/.test(input)) return 'Use only lowercase letters, numbers, hyphens, and underscores';
+        return true;
+      }
+    }
+  ]);
+  
+  await createHook(hookName);
+  await promptToContinue();
+}
+
+async function selectAndEditHook() {
+  const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
+  const allHooks = fs.readdirSync(hooksDir)
+    .filter(f => f.endsWith('.py'))
+    .map(f => f.replace('.py', ''));
+  
+  if (allHooks.length === 0) {
+    console.log(chalk.yellow('\nNo hooks found to edit.'));
+    await promptToContinue();
+    return;
+  }
+  
+  const { hookName } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'hookName',
+      message: 'Select a hook to edit:',
+      choices: allHooks
+    }
+  ]);
+  
+  await editHook(hookName);
+  await promptToContinue();
+}
+
+async function selectAndRemoveHook() {
+  const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
+  const allHooks = fs.readdirSync(hooksDir)
+    .filter(f => f.endsWith('.py') || f.endsWith('.py.disabled'))
+    .map(f => f.replace(/\.py(\.disabled)?$/, ''));
+  
+  // Remove duplicates
+  const uniqueHooks = [...new Set(allHooks)];
+  
+  if (uniqueHooks.length === 0) {
+    console.log(chalk.yellow('\nNo hooks found to remove.'));
+    await promptToContinue();
+    return;
+  }
+  
+  const { hookName } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'hookName',
+      message: 'Select a hook to remove:',
+      choices: uniqueHooks
+    }
+  ]);
+  
+  await removeHook(hookName);
   await promptToContinue();
 }
 
@@ -330,13 +504,47 @@ async function showStatus() {
 }
 
 async function enableHook(hookName) {
-  // TODO: Implement hook enable functionality
-  console.log(chalk.yellow(`Enabling ${hookName}... (Feature coming soon)`));
+  const hookPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py`);
+  const disabledPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.disabled`);
+  
+  if (fs.existsSync(hookPath)) {
+    console.log(chalk.yellow(`Hook ${hookName} is already enabled`));
+    return;
+  }
+  
+  if (fs.existsSync(disabledPath)) {
+    try {
+      fs.renameSync(disabledPath, hookPath);
+      console.log(chalk.green(`✅ Enabled ${hookName}`));
+    } catch (error) {
+      console.error(chalk.red(`Failed to enable ${hookName}:`), error.message);
+    }
+  } else {
+    console.error(chalk.red(`Hook ${hookName} not found`));
+    console.log(chalk.gray('Run "claude-hooks list" to see available hooks'));
+  }
 }
 
 async function disableHook(hookName) {
-  // TODO: Implement hook disable functionality
-  console.log(chalk.yellow(`Disabling ${hookName}... (Feature coming soon)`));
+  const hookPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py`);
+  const disabledPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.disabled`);
+  
+  if (!fs.existsSync(hookPath)) {
+    if (fs.existsSync(disabledPath)) {
+      console.log(chalk.yellow(`Hook ${hookName} is already disabled`));
+    } else {
+      console.error(chalk.red(`Hook ${hookName} not found`));
+    }
+    return;
+  }
+  
+  try {
+    fs.renameSync(hookPath, disabledPath);
+    console.log(chalk.green(`✅ Disabled ${hookName}`));
+    console.log(chalk.gray('The hook will not run until re-enabled'));
+  } catch (error) {
+    console.error(chalk.red(`Failed to disable ${hookName}:`), error.message);
+  }
 }
 
 async function initProject() {
@@ -421,6 +629,156 @@ async function runDoctor() {
   }
 }
 
+async function createHook(hookName) {
+  console.log(chalk.cyan(`\n🔨 Creating new hook: ${hookName}.py\n`));
+  
+  const { hookType } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'hookType',
+      message: 'Select hook event type:',
+      choices: [
+        { name: 'before_tool_call - Run before a tool is called', value: 'before_tool_call' },
+        { name: 'after_tool_call - Run after a tool is called', value: 'after_tool_call' },
+        { name: 'on_exit - Run when session ends', value: 'on_exit' }
+      ]
+    }
+  ]);
+  
+  const { tools } = await inquirer.prompt([
+    {
+      type: 'checkbox',
+      name: 'tools',
+      message: 'Select tools to monitor (leave empty for all):',
+      choices: ['Bash', 'Write', 'Edit', 'MultiEdit', 'Read', 'Task', 'WebFetch', 'WebSearch']
+    }
+  ]);
+  
+  const template = `#!/usr/bin/env python3
+"""
+${hookName} hook for Claude Code.
+Created: ${new Date().toISOString().split('T')[0]}
+"""
+import json
+import sys
+
+def main():
+    try:
+        # Read input from Claude Code
+        input_data = json.load(sys.stdin)
+        
+        tool_name = input_data.get('tool_name', '')
+        tool_input = input_data.get('tool_input', {})
+        
+        # Add your hook logic here
+        # Example: Check something and provide feedback
+        
+        # Exit code 0 = continue (with optional warning)
+        # Exit code 2 = block the operation
+        sys.exit(0)
+        
+    except json.JSONDecodeError:
+        print("Error: Invalid JSON input", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+`;
+
+  const hookPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py`);
+  
+  try {
+    fs.writeFileSync(hookPath, template);
+    fs.chmodSync(hookPath, 0o755);
+    console.log(chalk.green(`✅ Created ${hookPath}`));
+    console.log(chalk.gray('\nNext steps:'));
+    console.log(chalk.gray(`1. Edit the hook: claude-hooks edit ${hookName}`));
+    console.log(chalk.gray(`2. Update ~/.claude/settings.json to register the hook`));
+  } catch (error) {
+    console.error(chalk.red('Failed to create hook:'), error.message);
+  }
+}
+
+async function editHook(hookName) {
+  const hookPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py`);
+  
+  if (!fs.existsSync(hookPath)) {
+    console.error(chalk.red(`Hook ${hookName} not found`));
+    return;
+  }
+  
+  const editor = process.env.EDITOR || 'nano';
+  console.log(chalk.cyan(`Opening ${hookName}.py in ${editor}...`));
+  
+  try {
+    execSync(`${editor} "${hookPath}"`, { stdio: 'inherit' });
+  } catch (error) {
+    console.error(chalk.red('Failed to open editor:'), error.message);
+    console.log(chalk.gray(`You can manually edit: ${hookPath}`));
+  }
+}
+
+async function removeHook(hookName) {
+  const hookPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py`);
+  const disabledPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.disabled`);
+  
+  if (!fs.existsSync(hookPath) && !fs.existsSync(disabledPath)) {
+    console.error(chalk.red(`Hook ${hookName} not found`));
+    return;
+  }
+  
+  const { confirm } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'confirm',
+      message: `Are you sure you want to remove ${hookName}?`,
+      default: false
+    }
+  ]);
+  
+  if (!confirm) {
+    console.log(chalk.yellow('Cancelled'));
+    return;
+  }
+  
+  try {
+    if (fs.existsSync(hookPath)) fs.unlinkSync(hookPath);
+    if (fs.existsSync(disabledPath)) fs.unlinkSync(disabledPath);
+    console.log(chalk.green(`✅ Removed ${hookName}`));
+  } catch (error) {
+    console.error(chalk.red('Failed to remove hook:'), error.message);
+  }
+}
+
+async function configureSettings() {
+  const settingsPath = path.join(process.env.HOME, '.claude', 'settings.json');
+  
+  if (!fs.existsSync(settingsPath)) {
+    console.log(chalk.yellow('Settings file not found. Creating from template...'));
+    try {
+      const templatePath = path.join(__dirname, 'settings.example.json');
+      fs.copyFileSync(templatePath, settingsPath);
+      console.log(chalk.green('✅ Created settings.json'));
+    } catch (error) {
+      console.error(chalk.red('Failed to create settings:'), error.message);
+      return;
+    }
+  }
+  
+  const editor = process.env.EDITOR || 'nano';
+  console.log(chalk.cyan(`Opening settings.json in ${editor}...`));
+  
+  try {
+    execSync(`${editor} "${settingsPath}"`, { stdio: 'inherit' });
+  } catch (error) {
+    console.error(chalk.red('Failed to open editor:'), error.message);
+    console.log(chalk.gray(`You can manually edit: ${settingsPath}`));
+  }
+}
+
 function runTests() {
   console.log(chalk.cyan('\nRunning tests...\n'));
   try {
@@ -448,8 +806,12 @@ ${chalk.bold('Commands:')}
   ${chalk.yellow('info <hook>')}       Show detailed information about a specific hook
   ${chalk.yellow('install')}           Install hooks to Claude Code directory
   ${chalk.yellow('status')}            Check installation status
-  ${chalk.yellow('enable <hook>')}     Enable a specific hook (coming soon)
-  ${chalk.yellow('disable <hook>')}    Disable a specific hook (coming soon)
+  ${chalk.yellow('enable <hook>')}     Enable a disabled hook
+  ${chalk.yellow('disable <hook>')}    Disable a hook temporarily
+  ${chalk.yellow('create <name>')}     Create a new custom hook
+  ${chalk.yellow('edit <hook>')}       Edit an existing hook
+  ${chalk.yellow('remove <hook>')}     Remove a hook permanently
+  ${chalk.yellow('config')}            Edit Claude Code settings
   ${chalk.yellow('init')}              Initialize hooks for current project
   ${chalk.yellow('doctor')}            Run diagnostics to check setup
   ${chalk.yellow('test')}              Run the test suite
