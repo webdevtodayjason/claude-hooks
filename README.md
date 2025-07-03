@@ -606,7 +606,7 @@ Created for the Claude Code community to enhance productivity and maintain code 
 ---
 
 <p align="center">
-  <img src="img/semfreak-hooks-150x150.png" alt="Sem Hooks Logo" />
+  <img src="img/sem-logo-hooks-150x150.png" alt="Sem Hooks Logo" />
 </p>
 
 ## Star History
