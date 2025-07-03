@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "./tests/run_tests.sh",
+    "test:simple": "./tests/run_tests_simple.sh",
     "test:verbose": "python3 tests/test_hooks.py -v",
     "lint": "echo 'No linting configured yet'",
     "install-hooks": "./install.sh",

@@ -343,6 +343,104 @@ def main():
                 'expected_exit': 0,
                 'stderr_contains': ['can be synced to Dart']
             }
+        ],
+        
+        'api-docs-enforcer.py': [
+            {
+                'description': 'Should warn about missing API docs',
+                'input': {
+                    'tool_name': 'Write',
+                    'tool_input': {
+                        'file_path': 'api/users/route.ts',
+                        'content': 'export async function GET() { return Response.json({users: []}); }'
+                    }
+                },
+                'expected_exit': 0,
+                'stderr_contains': ['Consider adding']
+            }
+        ],
+        
+        'gitignore-enforcer.py': [
+            {
+                'description': 'Should check for gitignore',
+                'input': {
+                    'tool_name': 'Bash',
+                    'tool_input': {
+                        'command': 'git add .'
+                    }
+                },
+                'expected_exit': 0
+            }
+        ],
+        
+        'log-commands.py': [
+            {
+                'description': 'Should log bash commands',
+                'input': {
+                    'tool_name': 'Bash',
+                    'tool_input': {
+                        'command': 'ls -la'
+                    }
+                },
+                'expected_exit': 0,
+                'stderr_contains': ['Command logged']
+            }
+        ],
+        
+        'mcp-tool-enforcer.py': [
+            {
+                'description': 'Should suggest MCP tools',
+                'input': {
+                    'tool_name': 'Task',
+                    'tool_input': {
+                        'description': 'Search for files',
+                        'prompt': 'find . -name "*.js"'
+                    }
+                },
+                'expected_exit': 0,
+                'stderr_contains': ['Consider using']
+            }
+        ],
+        
+        'pre-commit-validator.py': [
+            {
+                'description': 'Should validate before commit',
+                'input': {
+                    'tool_name': 'Bash',
+                    'tool_input': {
+                        'command': 'git commit -m "test commit"'
+                    }
+                },
+                'expected_exit': 0,
+                'stderr_contains': ['Pre-commit']
+            }
+        ],
+        
+        'readme-update-validator.py': [
+            {
+                'description': 'Should remind about README updates',
+                'input': {
+                    'tool_name': 'Write',
+                    'tool_input': {
+                        'file_path': 'src/newFeature.js',
+                        'content': 'export const newFeature = () => {}'
+                    }
+                },
+                'expected_exit': 0,
+                'stderr_contains': ['README']
+            }
+        ],
+        
+        'session-end-summary.py': [
+            {
+                'description': 'Should not block when stop_hook_active is true',
+                'input': {
+                    'stop_hook_active': True,
+                    'transcript_path': '/tmp/test-transcript'
+                },
+                'expected_exit': 0,
+                'stderr_contains': []
+            }
         ]
     }
     

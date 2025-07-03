@@ -598,3 +598,13 @@ Created for the Claude Code community to enhance productivity and maintain code 
 - [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
 - [Hooks Documentation](https://docs.anthropic.com/en/docs/claude-code/hooks)
 - [MCP Tools](https://docs.anthropic.com/en/docs/claude-code/mcp)
+
+---
+
+<p align="center">Made with ❤️ by Sem</p>
+
+---
+
+<p align="center">
+  <img src="img/semfreak-hooks-150x150.png" alt="Sem Hooks Logo" />
+</p>
