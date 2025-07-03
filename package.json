@@ -8,8 +8,8 @@
     "claude-hooks-install": "./install.sh"
   },
   "scripts": {
-    "test": "./run_tests.sh",
-    "test:verbose": "python3 test_hooks.py -v",
+    "test": "./tests/run_tests.sh",
+    "test:verbose": "python3 tests/test_hooks.py -v",
     "lint": "echo 'No linting configured yet'",
     "install-hooks": "./install.sh",
     "postinstall": "echo 'Run claude-hooks-install to set up hooks'"
@@ -46,12 +46,10 @@
     "settings.example.json",
     "README.md",
     "LICENSE",
-    "CHANGELOG.md",
-    "CONTRIBUTING.md",
-    "CODE_OF_CONDUCT.md",
     ".claude/*",
     "docs/*",
-    "examples/*"
+    "examples/*",
+    "tests/*"
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

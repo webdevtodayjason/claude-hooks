@@ -48,7 +48,7 @@ def run_hook(hook_path, input_data):
 
 def test_hook(hook_name, test_cases):
     """Test a specific hook with multiple test cases."""
-    hook_path = Path(__file__).parent / "hooks" / hook_name
+    hook_path = Path(__file__).parent.parent / "hooks" / hook_name
     
     if not hook_path.exists():
         print(f"{Colors.RED}✗ {hook_name} not found{Colors.RESET}")

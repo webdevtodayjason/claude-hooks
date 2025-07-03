@@ -171,7 +171,7 @@ function showHookInfo(hookName) {
 function runTests() {
   console.log('Running tests...\n');
   try {
-    execSync('./run_tests.sh', { stdio: 'inherit' });
+    execSync('./tests/run_tests.sh', { stdio: 'inherit' });
   } catch (error) {
     console.error('Tests failed');
     process.exit(1);
