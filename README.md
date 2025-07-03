@@ -1,4 +1,6 @@
 
+![Claude Code Hooks Banner](img/banner.png)
+
 # Claude Code Hooks
 
 ![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
@@ -18,6 +20,8 @@ A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) th
 - [Claude Code SDK](https://docs.anthropic.com/en/docs/claude-code/sdk)
 
 ## Features
+
+![Features Overview](img/banner-logo.png)
 
 ### 🔒 Quality Gates
 - **Pre-commit validation** - Run tests, linting, and TypeScript checks before commits
