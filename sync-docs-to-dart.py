@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Documentation sync hook.
-Automatically creates/updates documentation in Dart when .md files are created/modified.
+Reminds you to sync documentation to Dart when .md files are created/modified.
+This is a generic example that can be customized for your project.
 """
 import json
 import os
@@ -65,7 +66,7 @@ def create_dart_sync_reminder(file_path, content):
     """Create a reminder to sync the document to Dart."""
     output = {
         "decision": "approve",
-        "reason": f"Document will be synced to Dart after creation",
+        "reason": f"Document can be synced to Dart after creation",
         "suppressOutput": False
     }
     
@@ -96,9 +97,9 @@ def create_dart_sync_reminder(file_path, content):
         pass
     
     # Provide feedback
-    print(f"📝 Document '{sync_info['title']}' marked for Dart sync", file=sys.stderr)
-    print(f"   Location: holace/Docs", file=sys.stderr)
-    print(f"   Run 'mcp__dart__create_doc' to complete sync", file=sys.stderr)
+    print(f"📝 Document '{sync_info['title']}' can be synced to Dart", file=sys.stderr)
+    print(f"   💡 Use 'mcp__dart__create_doc' to sync documentation", file=sys.stderr)
+    print(f"   📁 Choose your preferred folder in Dart", file=sys.stderr)
     
     return output
 

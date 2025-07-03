@@ -1,0 +1,28 @@
+{
+  "name": "claude-code-hooks",
+  "version": "2.0.0",
+  "description": "A comprehensive collection of hooks for Claude Code",
+  "scripts": {
+    "test": "./run_tests.sh",
+    "test:verbose": "python3 test_hooks.py -v",
+    "lint": "echo 'No linting configured yet'",
+    "install-hooks": "./install.sh"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "hooks",
+    "development",
+    "automation"
+  ],
+  "author": "webdevtodayjason",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/webdevtodayjason/claude-hooks.git"
+  },
+  "bugs": {
+    "url": "https://github.com/webdevtodayjason/claude-hooks/issues"
+  },
+  "homepage": "https://github.com/webdevtodayjason/claude-hooks#readme"
+}
