@@ -1,6 +1,9 @@
 # NPM config with tokens
 .npmrc
 
+# Node modules
+node_modules/
+
 # Log files
 *.log
 commands-*.log
