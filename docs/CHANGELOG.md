@@ -5,7 +5,7 @@ All notable changes to Claude Code Hooks will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.1] - 2025-01-03
+## [2.2.1] - 2025-07-03
 
 ### 🎨 UI Enhancements
 
@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better visual feedback for hook management
 - Clearer understanding of which hooks are active
 
-## [2.2.0] - 2025-01-03
+## [2.2.0] - 2025-07-03
 
 ### 🛠️ Complete Hook Management Suite
 
@@ -46,7 +46,7 @@ This release adds comprehensive hook management capabilities to the CLI.
 - Interactive menu now includes all management options
 - Better error handling for all commands
 
-## [2.1.0] - 2025-01-03
+## [2.1.0] - 2025-07-03
 
 ### 🎨 Enhanced CLI Experience
 
@@ -81,7 +81,7 @@ This release transforms the CLI into a powerful, interactive tool with beautiful
 - inquirer ^8.2.6 - Interactive command line prompts
 - ora ^5.4.1 - Elegant terminal spinners
 
-## [2.0.0] - 2025-01-03
+## [2.0.0] - 2025-07-03
 
 ### 🎉 Major Release - Comprehensive Hook Collection
 
@@ -126,7 +126,7 @@ This release introduces a complete set of 16 production-ready hooks for Claude C
 - Enforced .gitignore best practices
 - API security validation for internal endpoints
 
-## [1.0.0] - 2024-12-15
+## [1.0.0] - 2025-07-1
 
 ### Added
 - Initial set of 10 core hooks:
