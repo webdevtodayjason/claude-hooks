@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Claude Code Hooks Installation Script
+# Claude Hooks Manager Installation Script
 
-echo "Installing Claude Code Hooks..."
+echo "Installing Claude Hooks Manager..."
 
 # Create hooks directory if it doesn't exist
 mkdir -p ~/.claude/hooks
@@ -35,7 +35,7 @@ echo ""
 echo "Hooks installed to: ~/.claude/hooks/"
 echo ""
 echo "Next steps:"
-echo "1. Restart Claude Code for the hooks to take effect"
+echo "1. Restart Claude for the hooks to take effect"
 echo "2. Review ~/.claude/settings.json to ensure hooks are configured"
 echo "3. Customize hooks as needed for your workflow"
 echo ""
