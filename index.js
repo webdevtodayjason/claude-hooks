@@ -97,6 +97,11 @@ const hooks = {
     description: 'Reminds to update documentation',
     event: 'after_tool_call',
     tools: ['Write', 'MultiEdit', 'Edit']
+  },
+  'timestamp-validator': {
+    description: 'Validates dates and timestamps for accuracy',
+    event: 'before_tool_call',
+    tools: ['Write', 'Edit', 'MultiEdit', 'Bash']
   }
 };
 

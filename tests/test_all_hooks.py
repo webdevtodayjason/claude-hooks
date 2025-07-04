@@ -51,6 +51,7 @@ def main():
         'session-end-summary.py': '{"stop_hook_active":true,"transcript_path":"/tmp/test"}',
         'style-consistency.py': '{"tool_name":"Write","tool_input":{"file_path":"Button.tsx","content":"<button>Click</button>"}}',
         'sync-docs-to-dart.py': '{"tool_name":"Write","tool_input":{"file_path":"test.js","content":"const x = 1"}}',
+        'timestamp-validator.py': '{"tool":"Write","tool_input":{"file_path":"CHANGELOG.md","content":"## [1.0.0] - 2025-07-04\\n\\nTest release"}}',
         'validate-dart-task.py': '{"tool_name":"mcp__dart__create_task","tool_input":{"title":"Test Task"}}',
         'validate-git-commit.py': '{"tool_name":"Bash","tool_input":{"command":"git commit -m \\"Test commit message\\""}}',
     }

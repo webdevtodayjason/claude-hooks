@@ -5,7 +5,7 @@
 ![npm downloads](https://img.shields.io/npm/dm/claude-code-hooks.svg)
 ![Version](https://img.shields.io/badge/version-2.2.2-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Hooks](https://img.shields.io/badge/hooks-17-orange.svg)
+![Hooks](https://img.shields.io/badge/hooks-18-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.6+-blue.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
@@ -51,6 +51,7 @@ A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) th
 - **Environment sync** - Keeps .env and .env.example synchronized
 - **Gitignore enforcer** - Prevents committing sensitive files and test scripts
 - **README validator** - Reminds to update documentation when features change
+- **Timestamp validator** - Ensures accurate dates in documentation and changelogs
 
 ## Installation
 
@@ -581,6 +582,21 @@ Provides helpful reminders at session end:
 
 ### Why it's helpful:
 Acts like a helpful assistant making sure you don't forget important tasks before ending your coding session.
+</details>
+
+<details>
+<summary><strong>⏰ timestamp-validator.py</strong> - Date and Time Accuracy</summary>
+
+### What it does:
+Validates timestamps and dates in your documentation:
+- 📅 Checks dates in CHANGELOG entries
+- ⚠️ Warns about future dates or dates from wrong months
+- 🕐 Provides current timestamp in multiple formats
+- 🔍 Detects hardcoded dates that might be incorrect
+- 📝 Validates dates in commits and documentation
+
+### Why it's helpful:
+Prevents common date mistakes like using January dates in July, future dates in changelogs, or outdated timestamps. Ensures your documentation always has accurate temporal information.
 </details>
 
 ## Configuration

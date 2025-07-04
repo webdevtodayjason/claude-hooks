@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 📚 Documentation
 
 ### Added
+- New **timestamp-validator** hook
+  - Validates dates in documentation and changelogs
+  - Prevents incorrect dates (e.g., January dates in July)
+  - Warns about future dates or unreasonable timestamps
+  - Provides current date/time in multiple formats
+  - Catches common temporal mistakes in commits
 - Comprehensive "Developing Custom Hooks" guide
   - Complete tutorial with examples
   - Hook architecture explanation
