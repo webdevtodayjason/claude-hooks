@@ -3,7 +3,7 @@
 
 ![npm version](https://img.shields.io/npm/v/claude-code-hooks.svg)
 ![npm downloads](https://img.shields.io/npm/dm/claude-code-hooks.svg)
-![Version](https://img.shields.io/badge/version-2.2.1-blue.svg)
+![Version](https://img.shields.io/badge/version-2.2.2-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Hooks](https://img.shields.io/badge/hooks-17-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.6+-blue.svg)
@@ -16,6 +16,11 @@ A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) th
 
 ## 📚 Documentation
 
+### 🛠️ Guides
+- **[Developing Custom Hooks](docs/developing-custom-hooks.md)** - Create your own hooks with examples and best practices
+- [Project-Aware Hooks](docs/project-aware-hooks.md) - Configure hooks for multi-project environments
+
+### 📖 Official Resources
 - [Claude Code Hooks Documentation](https://docs.anthropic.com/en/docs/claude-code/hooks)
 - [Claude Code Setup Guide](https://docs.anthropic.com/en/docs/claude-code/setup)
 - [Model Context Protocol (MCP)](https://docs.anthropic.com/en/docs/claude-code/mcp)
@@ -632,6 +637,9 @@ See [Project-Aware Hooks Documentation](docs/project-aware-hooks.md) for detaile
 Edit `~/.claude/settings.json` and remove or comment out the specific hook entry.
 
 ### Add Custom Hooks
+See our comprehensive [Developing Custom Hooks Guide](docs/developing-custom-hooks.md) for detailed instructions.
+
+Quick start:
 1. Create a Python script in `~/.claude/hooks/`
 2. Make it executable: `chmod +x your-hook.py`
 3. Add it to the appropriate section in `settings.json`
@@ -685,6 +693,7 @@ Created for the Claude Code community to enhance productivity and maintain code 
 
 ## Resources
 
+- **[Developing Custom Hooks Guide](docs/developing-custom-hooks.md)** - Complete tutorial for creating your own hooks
 - [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
 - [Hooks Documentation](https://docs.anthropic.com/en/docs/claude-code/hooks)
 - [MCP Tools](https://docs.anthropic.com/en/docs/claude-code/mcp)

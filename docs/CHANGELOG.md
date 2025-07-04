@@ -5,6 +5,23 @@ All notable changes to Claude Code Hooks will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.2] - 2025-07-04
+
+### 📚 Documentation
+
+### Added
+- Comprehensive "Developing Custom Hooks" guide
+  - Complete tutorial with examples
+  - Hook architecture explanation
+  - Input/output specifications
+  - Best practices and troubleshooting
+  - Multiple real-world examples
+- Enhanced README with prominent documentation links
+
+### Improved
+- Better documentation organization in README
+- Clear guidance for users wanting to create custom hooks
+
 ## [2.2.1] - 2025-07-03
 
 ### 🎨 UI Enhancements
