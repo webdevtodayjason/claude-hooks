@@ -1,7 +1,7 @@
 {
-  "name": "claude-code-hooks",
-  "version": "2.2.2",
-  "description": "A comprehensive collection of hooks for Claude Code that enforce coding standards, maintain consistency, and automate workflow tasks",
+  "name": "claude-hooks-manager",
+  "version": "3.0.0",
+  "description": "A comprehensive hook management system for Claude that enforces coding standards, maintains consistency, and automates workflow tasks",
   "main": "index.js",
   "bin": {
     "claude-hooks": "./index.js",

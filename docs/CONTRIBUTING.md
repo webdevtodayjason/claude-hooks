@@ -1,6 +1,6 @@
-# Contributing to Claude Code Hooks
+# Contributing to Claude Hooks Manager
 
-Thank you for your interest in contributing to Claude Code Hooks! This project aims to help developers maintain high-quality code through automated hooks.
+Thank you for your interest in contributing to Claude Hooks Manager! This project aims to help developers maintain high-quality code through automated hooks.
 
 ## Code of Conduct
 
@@ -16,7 +16,7 @@ Before creating bug reports, please check existing issues to avoid duplicates. W
 * Describe the exact steps to reproduce the problem
 * Provide specific examples to demonstrate the steps
 * Describe the behavior you observed and what you expected
-* Include your system details (OS, Python version, Claude Code version)
+* Include your system details (OS, Python version, Claude version)
 
 ### Suggesting Enhancements
 

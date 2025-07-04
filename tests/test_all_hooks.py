@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Comprehensive test suite for all Claude Code hooks.
+Comprehensive test suite for all Claude Hooks Manager hooks.
 """
 import json
 import subprocess
@@ -31,7 +31,7 @@ def test_hook(hook_name, input_json, expected_exit=0):
 
 def main():
     """Test all hooks."""
-    print("Testing all Claude Code hooks...")
+    print("Testing all Claude Hooks Manager hooks...")
     print("=" * 50)
     
     # Define test cases for each hook

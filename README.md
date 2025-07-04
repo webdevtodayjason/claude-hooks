@@ -1,18 +1,32 @@
 
-# Claude Code Hooks by Sem
+# Claude Hooks Manager by Sem
 
-![npm version](https://img.shields.io/npm/v/claude-code-hooks.svg)
-![npm downloads](https://img.shields.io/npm/dm/claude-code-hooks.svg)
-![Version](https://img.shields.io/badge/version-2.2.2-blue.svg)
+![npm version](https://img.shields.io/npm/v/claude-hooks-manager.svg)
+![npm downloads](https://img.shields.io/npm/dm/claude-hooks-manager.svg)
+![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Hooks](https://img.shields.io/badge/hooks-18-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.6+-blue.svg)
-![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)
+![Claude](https://img.shields.io/badge/Claude-Compatible-purple.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 
-![Claude Code Hooks](img/banner-logo.png)
+![Claude Hooks Manager](img/banner-logo.png)
 
-A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) that enforce coding standards, maintain consistency, and automate workflow tasks across all projects.
+> **📢 Important Notice for Existing Users**
+> 
+> This project has been renamed from `claude-code-hooks` to `claude-hooks-manager` to better reflect its purpose as a management tool for Claude hooks.
+> 
+> **Migration Instructions:**
+> ```bash
+> # Uninstall old package
+> npm uninstall -g claude-code-hooks
+> 
+> # Install new package
+> npm install -g claude-hooks-manager
+> ```
+> The CLI command `claude-hooks` remains unchanged.
+
+A comprehensive hook management system for [Claude](https://claude.ai) that enforces coding standards, maintains consistency, and automates workflow tasks across all projects.
 
 ## 📚 Documentation
 
@@ -20,11 +34,11 @@ A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) th
 - **[Developing Custom Hooks](docs/developing-custom-hooks.md)** - Create your own hooks with examples and best practices
 - [Project-Aware Hooks](docs/project-aware-hooks.md) - Configure hooks for multi-project environments
 
-### 📖 Official Resources
-- [Claude Code Hooks Documentation](https://docs.anthropic.com/en/docs/claude-code/hooks)
-- [Claude Code Setup Guide](https://docs.anthropic.com/en/docs/claude-code/setup)
+### 📖 Official Claude Resources
+- [Claude Hooks Documentation](https://docs.anthropic.com/en/docs/claude-code/hooks)
+- [Claude Setup Guide](https://docs.anthropic.com/en/docs/claude-code/setup)
 - [Model Context Protocol (MCP)](https://docs.anthropic.com/en/docs/claude-code/mcp)
-- [Claude Code SDK](https://docs.anthropic.com/en/docs/claude-code/sdk)
+- [Claude SDK](https://docs.anthropic.com/en/docs/claude-code/sdk)
 
 ## Features
 
@@ -59,9 +73,9 @@ A comprehensive collection of hooks for [Claude Code](https://claude.ai/code) th
 
 ```bash
 # Install the package globally
-npm install -g claude-code-hooks
+npm install -g claude-hooks-manager
 
-# Run the installation script to copy hooks to Claude Code directory
+# Run the installation script to copy hooks to Claude directory
 claude-hooks-install
 ```
 
@@ -90,11 +104,11 @@ chmod +x install.sh
    chmod +x ~/.claude/hooks/*.py
    ```
 
-3. Update your Claude Code settings:
+3. Update your Claude settings:
    - If `~/.claude/settings.json` exists, merge the hooks configuration from `settings.example.json`
    - If not, copy `settings.example.json` to `~/.claude/settings.json`
 
-4. Restart Claude Code for the hooks to take effect
+4. Restart Claude for the hooks to take effect
 
 ## CLI Usage
 
@@ -106,7 +120,7 @@ When installed via npm, you get access to the powerful `claude-hooks` CLI:
 # Launch interactive menu (NEW!)
 claude-hooks
 
-# Install hooks to Claude Code directory
+# Install hooks to Claude directory
 claude-hooks install
 claude-hooks-install  # Also available as separate command
 
@@ -151,10 +165,10 @@ Running `claude-hooks` without any arguments launches an interactive menu:
 ```bash
 $ claude-hooks
 
-🪝 Claude Code Hooks Interactive Menu
+🪝 Claude Hooks Manager Interactive Menu
 
 ? What would you like to do? (Use arrow keys)
-❯ 📦 Install hooks to Claude Code
+❯ 📦 Install hooks to Claude
   📋 List all available hooks
   🔍 Get info about a specific hook
   ✅ Check installation status
@@ -170,7 +184,7 @@ $ claude-hooks
 ```bash
 # See what hooks are available
 $ claude-hooks list
-Available Claude Code Hooks:
+Available Claude Hooks:
 
   pre-commit-validator.py        Enforces coding standards before commits
   validate-git-commit.py         Validates commit message format
@@ -181,14 +195,14 @@ Available Claude Code Hooks:
 # Check if everything is set up correctly
 $ claude-hooks doctor
 
-🩺 Running Claude Code Hooks Diagnostics...
+🩺 Running Claude Hooks Manager Diagnostics...
 
 ✅ No issues found! Everything looks good.
 
 # Check installation status
 $ claude-hooks status
 
-🔍 Checking Claude Code Hooks Status...
+🔍 Checking Claude Hooks Manager Status...
 
 ✅ Hooks directory exists
    17 hooks installed
@@ -203,7 +217,7 @@ Tools: Write, MultiEdit, Edit
 
 # Run tests to ensure hooks are working
 $ claude-hooks test
-Running Claude Code Hooks Tests...
+Running Claude Hooks Manager Tests...
 ==================================
 ✅ All hooks are executable
 ✅ All 17 hooks passed tests!
@@ -667,7 +681,7 @@ Quick start:
 
 ## Best Practices
 
-1. **Performance** - Keep hooks fast to avoid slowing down Claude Code
+1. **Performance** - Keep hooks fast to avoid slowing down Claude
 2. **Error Handling** - Always handle exceptions gracefully
 3. **Clear Messages** - Provide actionable feedback
 4. **Non-Blocking** - Use warnings for suggestions, only block on critical issues
@@ -675,7 +689,7 @@ Quick start:
 ## Troubleshooting
 
 ### Hooks Not Running
-1. Restart Claude Code after installation
+1. Restart Claude after installation
 2. Check `~/.claude/settings.json` is valid JSON
 3. Verify hook files are executable
 
@@ -705,12 +719,12 @@ MIT License - see LICENSE file for details
 
 ## Acknowledgments
 
-Created for the Claude Code community to enhance productivity and maintain code quality.
+Created for the Claude community to enhance productivity and maintain code quality.
 
 ## Resources
 
 - **[Developing Custom Hooks Guide](docs/developing-custom-hooks.md)** - Complete tutorial for creating your own hooks
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
+- [Claude Documentation](https://docs.anthropic.com/en/docs/claude-code)
 - [Hooks Documentation](https://docs.anthropic.com/en/docs/claude-code/hooks)
 - [MCP Tools](https://docs.anthropic.com/en/docs/claude-code/mcp)
 

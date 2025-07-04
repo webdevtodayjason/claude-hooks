@@ -1,9 +1,33 @@
 # Changelog
 
-All notable changes to Claude Code Hooks will be documented in this file.
+All notable changes to Claude Hooks Manager will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [3.0.0] - 2025-07-04
+
+### 🚨 Breaking Change - Project Renamed
+
+This is a major release that renames the project from `claude-code-hooks` to `claude-hooks-manager`.
+
+### Changed
+- **Project Name**: Renamed from `claude-code-hooks` to `claude-hooks-manager`
+- **NPM Package**: Changed from `claude-code-hooks` to `claude-hooks-manager`
+- All references to "Claude Code" updated to "Claude" throughout documentation
+- CLI command remains `claude-hooks` for backward compatibility
+
+### Migration Guide
+```bash
+# Uninstall old package
+npm uninstall -g claude-code-hooks
+
+# Install new package
+npm install -g claude-hooks-manager
+```
+
+### Why the Change?
+This rename better reflects the tool's purpose as a management system for Claude hooks, while avoiding potential trademark concerns with Anthropic's "Claude Code" branding.
 
 ## [2.2.2] - 2025-07-04
 

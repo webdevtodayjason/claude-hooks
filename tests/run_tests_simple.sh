@@ -1,7 +1,7 @@
 #!/bin/bash
-# Simple test runner for Claude Code hooks
+# Simple test runner for Claude Hooks Manager
 
-echo "Running Claude Code Hooks Tests..."
+echo "Running Claude Hooks Manager Tests..."
 echo "=================================="
 
 # Test that hooks are executable

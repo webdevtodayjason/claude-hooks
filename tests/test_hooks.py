@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test suite for Claude Code hooks.
+Test suite for Claude Hooks Manager.
 Run with: python test_hooks.py
 """
 import json
@@ -96,7 +96,7 @@ def test_hook(hook_name, test_cases):
 
 def main():
     """Run all hook tests."""
-    print(f"{Colors.BLUE}Claude Code Hooks Test Suite{Colors.RESET}")
+    print(f"{Colors.BLUE}Claude Hooks Manager Test Suite{Colors.RESET}")
     print("=" * 40)
     
     # Define test cases for each hook

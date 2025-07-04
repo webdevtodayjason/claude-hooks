@@ -17,9 +17,9 @@ def validate_commit_message(message):
     if "Co-Authored-By" in message or "co-authored-by" in message.lower():
         errors.append("Co-authored commits are not allowed per project rules")
     
-    # Check for Claude Code signature (should be removed)
-    if "🤖 Generated with [Claude Code]" in message:
-        errors.append("Remove Claude Code signature from commit messages")
+    # Check for Claude signature (should be removed)
+    if "🤖 Generated with [Claude Code]" in message or "🤖 Generated with Claude" in message:
+        errors.append("Remove Claude signature from commit messages")
     
     # Extract the main commit message (first line)
     lines = message.strip().split('\n')

@@ -1,9 +1,9 @@
-# Developing Custom Hooks for Claude Code
+# Developing Custom Hooks for Claude
 
-This guide will walk you through creating your own custom hooks for Claude Code. Hooks allow you to intercept and modify Claude's behavior, enforce coding standards, and automate workflows.
+This guide will walk you through creating your own custom hooks for Claude. Hooks allow you to intercept and modify Claude's behavior, enforce coding standards, and automate workflows.
 
 ## Table of Contents
-- [Understanding Claude Code Hooks](#understanding-claude-code-hooks)
+- [Understanding Claude Hooks](#understanding-claude-hooks)
 - [Hook Architecture](#hook-architecture)
 - [Creating Your First Hook](#creating-your-first-hook)
 - [Hook Input and Output](#hook-input-and-output)
@@ -14,14 +14,14 @@ This guide will walk you through creating your own custom hooks for Claude Code.
 - [Installing Your Hook](#installing-your-hook)
 - [Examples](#examples)
 
-## Understanding Claude Code Hooks
+## Understanding Claude Hooks
 
-Claude Code hooks are Python scripts that run at specific points during Claude's execution. They receive JSON input via stdin and can influence Claude's behavior through their output and exit codes.
+Claude hooks are Python scripts that run at specific points during Claude's execution. They receive JSON input via stdin and can influence Claude's behavior through their output and exit codes.
 
 ## Hook Architecture
 
 ```
-Claude Code → Hook Triggered → Python Script → Decision/Action
+Claude → Hook Triggered → Python Script → Decision/Action
      ↓              ↓                ↓              ↓
  User Input    JSON via stdin   Process Data   Exit Code
 ```
@@ -39,7 +39,7 @@ This creates a template in `~/.claude/hooks/my-custom-hook.py`:
 ```python
 #!/usr/bin/env python3
 """
-my-custom-hook - A custom hook for Claude Code
+my-custom-hook - A custom hook for Claude
 Description: Add your description here
 Author: Your Name
 """
@@ -253,7 +253,7 @@ for test in test_cases:
 
 ### Integration Testing
 
-Test with Claude Code directly:
+Test with Claude directly:
 ```bash
 # Enable your hook
 claude-hooks enable my-custom-hook
@@ -540,9 +540,9 @@ If you've created a useful hook, consider contributing it to the claude-code-hoo
 
 ## Resources
 
-- [Claude Code Hooks Repository](https://github.com/webdevtodayjason/claude-hooks)
+- [Claude Hooks Manager Repository](https://github.com/webdevtodayjason/claude-hooks)
 - [Hook Examples](https://github.com/webdevtodayjason/claude-hooks/tree/main/hooks)
-- [Claude Code Documentation](https://docs.anthropic.com/claude-code)
+- [Claude Documentation](https://docs.anthropic.com/claude-code)
 
 ---
 

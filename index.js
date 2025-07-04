@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Claude Code Hooks - Enhanced CLI with interactive features
+ * Claude Hooks Manager - Enhanced CLI with interactive features
  */
 
 const { execSync } = require('child_process');
@@ -202,7 +202,7 @@ async function main() {
 
 // Interactive menu
 async function showInteractiveMenu() {
-  console.log(chalk.cyan('\n🪝 Claude Code Hooks Interactive Menu\n'));
+  console.log(chalk.cyan('\n🪝 Claude Hooks Manager Interactive Menu\n'));
 
   const { action } = await inquirer.prompt([
     {
@@ -210,7 +210,7 @@ async function showInteractiveMenu() {
       name: 'action',
       message: 'What would you like to do?',
       choices: [
-        { name: '📦 Install hooks to Claude Code', value: 'install' },
+        { name: '📦 Install hooks to Claude', value: 'install' },
         { name: '📋 List all available hooks', value: 'list' },
         { name: '🔍 Get info about a specific hook', value: 'info' },
         { name: '✅ Check installation status', value: 'status' },
@@ -275,7 +275,7 @@ async function showInteractiveMenu() {
       await initProject();
       break;
     case 'exit':
-      console.log(chalk.green('\nThanks for using Claude Code Hooks! 👋\n'));
+      console.log(chalk.green('\nThanks for using Claude Hooks Manager! 👋\n'));
       process.exit(0);
   }
 
@@ -451,7 +451,7 @@ async function selectAndRemoveHook() {
 }
 
 function listHooks() {
-  console.log(chalk.cyan('\nAvailable Claude Code Hooks:\n'));
+  console.log(chalk.cyan('\nAvailable Claude Hooks:\n'));
   
   const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
   
@@ -498,7 +498,7 @@ function showHookInfo(hookName) {
 }
 
 async function installHooks() {
-  const spinner = ora('Installing hooks to Claude Code directory...').start();
+  const spinner = ora('Installing hooks to Claude directory...').start();
   
   try {
     // Hide spinner output during install script
@@ -506,7 +506,7 @@ async function installHooks() {
     execSync('./install.sh', { stdio: 'inherit' });
     spinner.succeed('Hooks installed successfully!');
     console.log(chalk.green('\n✅ All hooks have been copied to ~/.claude/hooks/'));
-    console.log(chalk.gray('Restart Claude Code for the hooks to take effect.\n'));
+    console.log(chalk.gray('Restart Claude for the hooks to take effect.\n'));
   } catch (error) {
     spinner.fail('Installation failed');
     console.error(chalk.red('Error during installation:'), error.message);
@@ -515,7 +515,7 @@ async function installHooks() {
 }
 
 async function showStatus() {
-  console.log(chalk.cyan('\n🔍 Checking Claude Code Hooks Status...\n'));
+  console.log(chalk.cyan('\n🔍 Checking Claude Hooks Manager Status...\n'));
   
   const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
   const settingsFile = path.join(process.env.HOME, '.claude', 'settings.json');
@@ -593,7 +593,7 @@ async function disableHook(hookName) {
 }
 
 async function initProject() {
-  console.log(chalk.cyan('\n🚀 Initializing Claude Code Hooks for this project...\n'));
+  console.log(chalk.cyan('\n🚀 Initializing Claude Hooks Manager for this project...\n'));
   
   const { setupType } = await inquirer.prompt([
     {
@@ -624,7 +624,7 @@ async function initProject() {
 }
 
 async function runDoctor() {
-  console.log(chalk.cyan('\n🩺 Running Claude Code Hooks Diagnostics...\n'));
+  console.log(chalk.cyan('\n🩺 Running Claude Hooks Manager Diagnostics...\n'));
   
   const spinner = ora('Checking installation...').start();
   
@@ -656,7 +656,7 @@ async function runDoctor() {
   // Check for settings.json
   const settingsFile = path.join(process.env.HOME, '.claude', 'settings.json');
   if (!fs.existsSync(settingsFile)) {
-    issues.push('Claude Code settings file not found');
+    issues.push('Claude settings file not found');
     suggestions.push('Copy settings.example.json to ~/.claude/settings.json');
   }
   
@@ -701,7 +701,7 @@ async function createHook(hookName) {
   
   const template = `#!/usr/bin/env python3
 """
-${hookName} hook for Claude Code.
+${hookName} hook for Claude.
 Created: ${new Date().toISOString().split('T')[0]}
 """
 import json
@@ -709,7 +709,7 @@ import sys
 
 def main():
     try:
-        # Read input from Claude Code
+        # Read input from Claude
         input_data = json.load(sys.stdin)
         
         tool_name = input_data.get('tool_name', '')
@@ -841,7 +841,7 @@ function showVersion() {
 
 function showHelp() {
   console.log(`
-${chalk.cyan('Claude Code Hooks')} - Enhance your Claude Code workflow
+${chalk.cyan('Claude Hooks Manager')} - Enhance your Claude workflow
 
 ${chalk.bold('Usage:')} claude-hooks [command] [options]
 
@@ -849,14 +849,14 @@ ${chalk.bold('Commands:')}
   ${chalk.yellow('(no command)')}      Launch interactive menu
   ${chalk.yellow('list')}              List all available hooks
   ${chalk.yellow('info <hook>')}       Show detailed information about a specific hook
-  ${chalk.yellow('install')}           Install hooks to Claude Code directory
+  ${chalk.yellow('install')}           Install hooks to Claude directory
   ${chalk.yellow('status')}            Check installation status
   ${chalk.yellow('enable <hook>')}     Enable a disabled hook
   ${chalk.yellow('disable <hook>')}    Disable a hook temporarily
   ${chalk.yellow('create <name>')}     Create a new custom hook
   ${chalk.yellow('edit <hook>')}       Edit an existing hook
   ${chalk.yellow('remove <hook>')}     Remove a hook permanently
-  ${chalk.yellow('config')}            Edit Claude Code settings
+  ${chalk.yellow('config')}            Edit Claude Hooks Manager settings
   ${chalk.yellow('init')}              Initialize hooks for current project
   ${chalk.yellow('doctor')}            Run diagnostics to check setup
   ${chalk.yellow('test')}              Run the test suite
