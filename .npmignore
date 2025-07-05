@@ -33,6 +33,20 @@ settings.json
 # Development scripts
 dev-*.sh
 
+# Project-specific files
+.dart
+CLAUDE.md
+CLAUDE.md.template
+migrate-disabled-hooks.js
+wiki/
+push-wiki.sh
+setup-wiki.sh
+
+# Session data
+.claude/pending-dart-syncs.json
+.claude/session-summary.json
+.claude/settings.local.json
+
 # Coverage reports
 coverage/
 .coverage
