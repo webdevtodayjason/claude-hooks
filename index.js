@@ -225,6 +225,9 @@ async function showInteractiveMenu() {
         { name: '🚀 Initialize project hooks', value: 'init' },
         { name: '🩺 Run diagnostics (doctor)', value: 'doctor' },
         { name: '🧪 Run tests', value: 'test' },
+        new inquirer.Separator('─── Dart Integration ───'),
+        { name: '🎯 Initialize Dart config', value: 'dart-init' },
+        { name: '📝 Edit Dart config', value: 'dart-edit' },
         new inquirer.Separator(),
         { name: '❌ Exit', value: 'exit' }
       ]
@@ -273,6 +276,12 @@ async function showInteractiveMenu() {
       break;
     case 'init':
       await initProject();
+      break;
+    case 'dart-init':
+      await initDartConfig();
+      break;
+    case 'dart-edit':
+      await editDartConfig();
       break;
     case 'exit':
       console.log(chalk.green('\nThanks for using Claude Hooks Manager! 👋\n'));
@@ -716,6 +725,34 @@ async function initProject() {
   
   console.log(chalk.green(`\n✅ Created ${projectClaudeDir}`));
   console.log(chalk.gray('Add project-specific configuration here.\n'));
+  
+  // Ask about Dart integration
+  const { setupDart } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'setupDart',
+      message: 'Would you like to set up Dart integration for this project?',
+      default: true
+    }
+  ]);
+  
+  if (setupDart) {
+    await initDartConfig();
+  } else {
+    // Ask about CLAUDE.md without Dart
+    const { createClaudeMd } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'createClaudeMd',
+        message: 'Would you like to create a CLAUDE.md file with project instructions?',
+        default: true
+      }
+    ]);
+    
+    if (createClaudeMd) {
+      await createClaudeInstructions({}, process.cwd());
+    }
+  }
 }
 
 async function runDoctor() {
@@ -952,6 +989,355 @@ function runTests() {
     console.error(chalk.red('Tests failed'));
     process.exit(1);
   }
+}
+
+async function initDartConfig() {
+  console.log(chalk.cyan('\n🎯 Initializing Dart Configuration\n'));
+  
+  const projectRoot = process.cwd();
+  const projectName = path.basename(projectRoot);
+  const dartFile = path.join(projectRoot, '.dart');
+  
+  // Check if .dart already exists
+  if (fs.existsSync(dartFile)) {
+    console.log(chalk.yellow('⚠️  .dart file already exists in this project'));
+    const { overwrite } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'overwrite',
+        message: 'Do you want to overwrite it?',
+        default: false
+      }
+    ]);
+    
+    if (!overwrite) {
+      console.log(chalk.gray('Cancelled'));
+      await promptToContinue();
+      return;
+    }
+  }
+  
+  // Prompt for configuration
+  const answers = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'workspace',
+      message: 'Enter Dart workspace name:',
+      default: projectName,
+      validate: input => input.trim() ? true : 'Workspace name is required'
+    },
+    {
+      type: 'input',
+      name: 'tasksFolder',
+      message: 'Enter tasks dartboard (e.g., workspace/Tasks):',
+      default: answers => `${answers.workspace}/Tasks`,
+      validate: input => input.includes('/') ? true : 'Format should be workspace/board'
+    },
+    {
+      type: 'input',
+      name: 'docsFolder',
+      message: 'Enter documentation folder (e.g., workspace/Docs):',
+      default: answers => `${answers.workspace}/Docs`,
+      validate: input => input.includes('/') ? true : 'Format should be workspace/folder'
+    },
+    {
+      type: 'confirm',
+      name: 'syncEnabled',
+      message: 'Enable automatic documentation sync suggestions?',
+      default: true
+    }
+  ]);
+  
+  // Create configuration
+  const dartConfig = {
+    workspace: answers.workspace,
+    tasksFolder: answers.tasksFolder,
+    docsFolder: answers.docsFolder,
+    syncEnabled: answers.syncEnabled,
+    syncRules: {
+      include: ['README.md', 'docs/**/*.md'],
+      exclude: ['.github/**/*.md', 'node_modules/**/*.md', 'test/**/*.md']
+    }
+  };
+  
+  // Ask about CLAUDE.md
+  const { createClaudeMd } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'createClaudeMd',
+      message: 'Would you like to create a CLAUDE.md file with project instructions?',
+      default: true
+    }
+  ]);
+  
+  // Write .dart file
+  try {
+    fs.writeFileSync(dartFile, JSON.stringify(dartConfig, null, 2));
+    console.log(chalk.green(`\n✅ Created .dart configuration file`));
+    console.log(chalk.gray(`Location: ${dartFile}`));
+    console.log('\nConfiguration:');
+    console.log(chalk.gray(JSON.stringify(dartConfig, null, 2)));
+    
+    // Add to .gitignore
+    const gitignorePath = path.join(projectRoot, '.gitignore');
+    if (fs.existsSync(gitignorePath)) {
+      const gitignore = fs.readFileSync(gitignorePath, 'utf8');
+      if (!gitignore.includes('.dart')) {
+        fs.appendFileSync(gitignorePath, '\n# Dart workspace configuration\n.dart\n');
+        console.log(chalk.gray('\n✅ Added .dart to .gitignore'));
+      }
+    }
+    
+    // Create CLAUDE.md if requested
+    if (createClaudeMd) {
+      await createClaudeInstructions(dartConfig, projectRoot);
+    }
+    
+  } catch (error) {
+    console.error(chalk.red('Failed to create .dart file:'), error.message);
+  }
+  
+  await promptToContinue();
+}
+
+async function createClaudeInstructions(dartConfig, projectRoot) {
+  const claudeMdPath = path.join(projectRoot, 'CLAUDE.md');
+  const projectName = path.basename(projectRoot);
+  
+  // Check if CLAUDE.md already exists
+  if (fs.existsSync(claudeMdPath)) {
+    const { overwrite } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'overwrite',
+        message: 'CLAUDE.md already exists. Overwrite it?',
+        default: false
+      }
+    ]);
+    
+    if (!overwrite) {
+      return;
+    }
+  }
+  
+  // Gather additional project information
+  const projectInfo = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'description',
+      message: 'Brief project description:',
+      default: `${projectName} project`
+    },
+    {
+      type: 'input',
+      name: 'primaryLanguage',
+      message: 'Primary programming language:',
+      default: 'JavaScript'
+    },
+    {
+      type: 'input',
+      name: 'testCommand',
+      message: 'Test command (if any):',
+      default: 'npm test'
+    },
+    {
+      type: 'input',
+      name: 'lintCommand',
+      message: 'Lint command (if any):',
+      default: 'npm run lint'
+    },
+    {
+      type: 'input',
+      name: 'typecheckCommand',
+      message: 'Type check command (if any):',
+      default: 'npm run typecheck'
+    },
+    {
+      type: 'input',
+      name: 'runCommand',
+      message: 'How to run the application:',
+      default: 'npm start'
+    },
+    {
+      type: 'input',
+      name: 'techStack',
+      message: 'Technology stack (comma-separated):',
+      default: 'Node.js, Express'
+    },
+    {
+      type: 'editor',
+      name: 'additionalInstructions',
+      message: 'Any additional instructions for Claude (press Enter to open editor):'
+    }
+  ]);
+  
+  // Create CLAUDE.md content
+  let dartSection = '';
+  let taskManagementSection = '';
+  let documentationRules = '';
+  
+  if (dartConfig.workspace) {
+    dartSection = `
+## Dart MCP Tool Configuration
+
+### MANDATORY: Dart MCP Tool Usage
+**ALL project management MUST use the Dart MCP tool. This is NOT optional.**
+
+### ${dartConfig.workspace} Project Configuration
+1. **Workspace**: ${dartConfig.workspace}
+2. **Dartboard**: \`${dartConfig.tasksFolder}\`
+3. **Docs Folder**: \`${dartConfig.docsFolder}\`
+
+**IMPORTANT**: Use the full path format (workspace/folder) when calling Dart MCP functions!
+`;
+
+    taskManagementSection = `
+## Task Management Rules
+
+1. **Always use Dart MCP for tasks** - No exceptions
+2. **Valid Task Status Values**:
+   - \`To-do\` - For new tasks
+   - \`Doing\` - When actively working on a task
+   - \`Done\` - When task is completed
+3. **Valid Priority Values**:
+   - \`Critical\`
+   - \`High\`
+   - \`Medium\`
+   - \`Low\`
+4. **When starting work on a task**:
+   - Set status to \`Doing\`
+   - Use TodoWrite tool in parallel to track subtasks
+5. **When updating a task**:
+   - NEVER modify the task details/title
+   - ONLY add comments to track progress
+6. **When completing a task**:
+   - Set status to \`Done\`
+   - Update TodoWrite tool accordingly
+7. **Task creation**:
+   - Create tasks in \`${dartConfig.tasksFolder}\` dartboard
+   - Include clear descriptions
+   - Set appropriate priority
+`;
+
+    documentationRules = `
+## Documentation Rules
+
+1. **All .md files created locally MUST be duplicated in Dart**
+2. **Documentation goes in \`${dartConfig.docsFolder}\` folder**
+3. **Keep documentation synchronized**:
+   - When creating local .md files, immediately create in Dart
+   - When updating local .md files, update Dart version
+4. **Documentation structure**:
+   - Mirror local folder structure in Dart where possible
+   - Use clear, descriptive titles
+`;
+  }
+  
+  const claudeMdContent = `# ${projectName} Project Instructions for Claude
+
+## Project Overview
+${projectInfo.description}
+${dartSection}${taskManagementSection}
+## Git Workflow
+
+- Commit messages should be descriptive
+- NO co-authored details in commits
+- NO 🤖 Generated with Claude Code
+- Use conventional commit format when possible
+${documentationRules}
+## Development Guidelines
+
+### Detail-Oriented Implementation
+
+**BE DETAIL-ORIENTED AND COMPLETE ALL FUNCTIONALITY**
+
+1. **Forms and Data Flow**:
+   - When creating forms, ensure ALL collected data is properly saved
+   - Track data flow from frontend through APIs to backend
+   - Verify that no form fields are being ignored or lost
+   - Map form field values correctly to their types
+
+2. **Dynamic Pages and Features**:
+   - Implement all promised functionality, not just UI shells
+   - Ensure data is properly fetched, displayed, and can be modified
+   - Connect all interactive elements to their backend functionality
+   - Test the complete user flow, not just individual components
+
+3. **Before Marking Complete**:
+   - Verify data persistence (can create, read, update, delete)
+   - Check that all form fields are functional
+   - Ensure proper error handling
+   - Test the complete feature flow end-to-end
+
+### Testing Commands
+${projectInfo.testCommand ? `- Test: \`${projectInfo.testCommand}\`` : ''}
+${projectInfo.lintCommand ? `- Lint: \`${projectInfo.lintCommand}\`` : ''}
+${projectInfo.typecheckCommand ? `- Type check: \`${projectInfo.typecheckCommand}\`` : ''}
+
+## Project-Specific Context
+
+### Technology Stack
+${projectInfo.techStack}
+
+### Running the Application
+${projectInfo.runCommand ? `\`${projectInfo.runCommand}\`` : 'See project documentation'}
+
+## Important Reminders
+- Focus on complete implementation, not partial features
+- Always test features end-to-end before marking complete
+- Maintain clean, well-documented code
+- Follow the project's established patterns and conventions
+${dartConfig.workspace ? '\n- Use Dart MCP for ALL task management without exception' : ''}
+
+${projectInfo.additionalInstructions ? `## Additional Instructions\n\n${projectInfo.additionalInstructions}` : ''}
+
+---
+*Generated by Claude Hooks Manager on ${new Date().toISOString().split('T')[0]}*
+`;
+  
+  try {
+    fs.writeFileSync(claudeMdPath, claudeMdContent);
+    console.log(chalk.green('\n✅ Created CLAUDE.md file'));
+    console.log(chalk.gray(`Location: ${claudeMdPath}`));
+    console.log(chalk.gray('\nClaude will now have project-specific instructions!'));
+  } catch (error) {
+    console.error(chalk.red('Failed to create CLAUDE.md:'), error.message);
+  }
+}
+
+async function editDartConfig() {
+  const projectRoot = process.cwd();
+  const dartFile = path.join(projectRoot, '.dart');
+  
+  if (!fs.existsSync(dartFile)) {
+    console.log(chalk.yellow('\n⚠️  No .dart file found in this project'));
+    const { create } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'create',
+        message: 'Would you like to create one?',
+        default: true
+      }
+    ]);
+    
+    if (create) {
+      await initDartConfig();
+    }
+    return;
+  }
+  
+  const editor = process.env.EDITOR || 'nano';
+  console.log(chalk.cyan(`\nOpening .dart in ${editor}...`));
+  
+  try {
+    execSync(`${editor} "${dartFile}"`, { stdio: 'inherit' });
+    console.log(chalk.green('\n✅ Dart configuration updated'));
+  } catch (error) {
+    console.error(chalk.red('Failed to open editor:'), error.message);
+    console.log(chalk.gray(`You can manually edit: ${dartFile}`));
+  }
+  
+  await promptToContinue();
 }
 
 function showVersion() {

@@ -156,6 +156,10 @@ claude-hooks --version
 
 # Display help and usage information
 claude-hooks --help
+
+# Dart Integration Commands (NEW!)
+claude-hooks dart init     # Initialize Dart workspace configuration
+claude-hooks dart edit     # Edit existing .dart configuration
 ```
 
 ### Interactive Menu (NEW!)
@@ -222,6 +226,92 @@ Running Claude Hooks Manager Tests...
 ✅ All hooks are executable
 ✅ All 17 hooks passed tests!
 ```
+
+## 🎯 Dart Integration
+
+Claude Hooks Manager now includes seamless integration with Dart MCP for project management. This feature enables automatic task tracking and documentation synchronization.
+
+### What is Dart Integration?
+
+Dart integration allows Claude to:
+- Automatically suggest creating tasks in your Dart workspace
+- Sync documentation between your local project and Dart
+- Validate task creation with project-specific rules
+- Generate CLAUDE.md files with workspace configuration
+
+### Setting Up Dart Integration
+
+#### Method 1: During Project Init
+```bash
+claude-hooks init
+# When prompted, choose to set up Dart integration
+```
+
+#### Method 2: Direct Dart Setup
+```bash
+claude-hooks dart init
+```
+
+This will:
+1. Create a `.dart` configuration file in your project root
+2. Configure your Dart workspace, tasks folder, and docs folder
+3. Optionally create a CLAUDE.md file with project instructions
+
+### The .dart Configuration File
+
+The `.dart` file stores your project's Dart workspace configuration:
+
+```json
+{
+  "workspace": "MCP Forge",
+  "tasksFolder": "MCP Forge/Tasks",
+  "docsFolder": "MCP Forge/Docs",
+  "syncEnabled": true,
+  "syncRules": {
+    "include": ["README.md", "docs/**/*.md", "wiki/**/*.md"],
+    "exclude": [".github/**/*.md", "node_modules/**/*.md", "test/**/*.md"]
+  }
+}
+```
+
+### CLAUDE.md - Project Instructions
+
+The `claude-hooks dart init` command can also generate a CLAUDE.md file that provides Claude with:
+- Project-specific instructions
+- Dart workspace configuration
+- Task management rules
+- Git workflow guidelines
+- Development best practices
+
+### Disabling Dart Features
+
+If you're not using Dart, you can:
+
+1. **Skip during setup**: Choose "No" when asked about Dart integration
+2. **Disable sync**: Set `"syncEnabled": false` in your `.dart` file
+3. **Remove configuration**: Delete the `.dart` file from your project
+4. **Disable hooks**: Run `claude-hooks disable sync-docs-to-dart` and `claude-hooks disable validate-dart-task`
+
+### How It Works
+
+1. **sync-docs-to-dart hook**: 
+   - Triggers when you create/edit markdown files
+   - Checks for `.dart` configuration
+   - If no config exists, prompts you to run `claude-hooks dart init`
+   - If configured, suggests syncing to your Dart docs folder
+
+2. **validate-dart-task hook**:
+   - Triggers when creating Dart tasks
+   - Suggests using your project's configured dartboard
+   - Validates task priorities and statuses
+
+### Customizing CLAUDE.md
+
+See [CLAUDE.md.template](./CLAUDE.md.template) for a complete guide on customizing your project instructions. The template includes:
+- Variable references
+- Common customizations
+- Best practices
+- Example configurations
 
 ## Hooks Overview
 

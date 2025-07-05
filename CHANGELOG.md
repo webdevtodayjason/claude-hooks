@@ -5,6 +5,32 @@ All notable changes to Claude Hooks Manager will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2025-07-05
+
+### Added
+- Dart MCP integration with `.dart` configuration files
+- `claude-hooks dart init` command to set up Dart workspace
+- `claude-hooks dart edit` command to modify Dart configuration
+- CLAUDE.md generation with comprehensive project instructions
+- CLAUDE.md.template guide for customization
+- Workspace-aware sync-docs-to-dart hook
+- Workspace-aware validate-dart-task hook
+- Interactive prompts for workspace configuration
+- Documentation sync rules (include/exclude patterns)
+- Integration with project init workflow
+
+### Changed
+- sync-docs-to-dart hook now uses `.dart` configuration instead of guessing
+- validate-dart-task hook suggests project-specific dartboard
+- Project init now offers Dart integration setup
+- Hooks prompt for configuration when .dart file is missing
+
+### Documentation
+- Added comprehensive Dart Integration section to README
+- Created CLAUDE.md.template with customization guide
+- Added examples of .dart configuration
+- Documented how to disable Dart features
+
 ## [3.0.1] - 2025-07-05
 
 ### Fixed
