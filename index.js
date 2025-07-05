@@ -332,10 +332,13 @@ async function selectAndShowHookInfo() {
 async function selectAndEnableHook() {
   const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
   const disabledHooks = fs.readdirSync(hooksDir)
-    .filter(f => f.endsWith('.py.disabled'))
-    .map(f => f.replace('.py.disabled', ''));
+    .filter(f => f.endsWith('.py.disabled') || f.endsWith('.py.original'))
+    .map(f => f.replace(/\.py\.(disabled|original)$/, ''));
   
-  if (disabledHooks.length === 0) {
+  // Remove duplicates
+  const uniqueDisabledHooks = [...new Set(disabledHooks)];
+  
+  if (uniqueDisabledHooks.length === 0) {
     console.log(chalk.yellow('\nNo disabled hooks found.'));
     await promptToContinue();
     return;
@@ -346,7 +349,7 @@ async function selectAndEnableHook() {
       type: 'list',
       name: 'hookName',
       message: 'Select a hook to enable:',
-      choices: disabledHooks
+      choices: uniqueDisabledHooks
     }
   ]);
   
@@ -356,9 +359,29 @@ async function selectAndEnableHook() {
 
 async function selectAndDisableHook() {
   const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
-  const enabledHooks = fs.readdirSync(hooksDir)
-    .filter(f => f.endsWith('.py') && !f.endsWith('.disabled'))
-    .map(f => f.replace('.py', ''));
+  const pyFiles = fs.readdirSync(hooksDir)
+    .filter(f => f.endsWith('.py') && !f.endsWith('.disabled') && !f.endsWith('.original'));
+  
+  // Filter out stub files
+  const enabledHooks = [];
+  for (const file of pyFiles) {
+    const hookName = file.replace('.py', '');
+    const hookPath = path.join(hooksDir, file);
+    
+    // Check if there's an .original file (which means it's disabled)
+    if (!fs.existsSync(path.join(hooksDir, `${hookName}.py.original`))) {
+      try {
+        const content = fs.readFileSync(hookPath, 'utf8');
+        // Skip if it's a stub file
+        if (!content.includes('Stub for disabled hook:')) {
+          enabledHooks.push(hookName);
+        }
+      } catch {
+        // If we can't read the file, assume it's enabled
+        enabledHooks.push(hookName);
+      }
+    }
+  }
   
   if (enabledHooks.length === 0) {
     console.log(chalk.yellow('\nNo enabled hooks found.'));
@@ -425,8 +448,8 @@ async function selectAndEditHook() {
 async function selectAndRemoveHook() {
   const hooksDir = path.join(process.env.HOME, '.claude', 'hooks');
   const allHooks = fs.readdirSync(hooksDir)
-    .filter(f => f.endsWith('.py') || f.endsWith('.py.disabled'))
-    .map(f => f.replace(/\.py(\.disabled)?$/, ''));
+    .filter(f => f.endsWith('.py') || f.endsWith('.py.disabled') || f.endsWith('.py.original'))
+    .map(f => f.replace(/\.py(\.disabled|\.original)?$/, ''));
   
   // Remove duplicates
   const uniqueHooks = [...new Set(allHooks)];
@@ -458,13 +481,28 @@ function listHooks() {
   Object.entries(hooks).forEach(([name, info]) => {
     // Check if hook is enabled or disabled
     const hookPath = path.join(hooksDir, `${name}.py`);
+    const originalPath = path.join(hooksDir, `${name}.py.original`);
     const disabledPath = path.join(hooksDir, `${name}.py.disabled`);
     
     let status = '';
-    if (fs.existsSync(hookPath)) {
-      status = chalk.green('●') + ' '; // Green dot for enabled
-    } else if (fs.existsSync(disabledPath)) {
+    if (fs.existsSync(originalPath)) {
+      // New disable mechanism - hook is disabled with stub in place
       status = chalk.red('●') + ' '; // Red dot for disabled
+    } else if (fs.existsSync(disabledPath)) {
+      // Old disable mechanism - backward compatibility
+      status = chalk.red('●') + ' '; // Red dot for disabled
+    } else if (fs.existsSync(hookPath)) {
+      // Check if it's a stub file
+      try {
+        const content = fs.readFileSync(hookPath, 'utf8');
+        if (content.includes('Stub for disabled hook:')) {
+          status = chalk.red('●') + ' '; // Red dot for disabled (stub)
+        } else {
+          status = chalk.green('●') + ' '; // Green dot for enabled
+        }
+      } catch {
+        status = chalk.green('●') + ' '; // Green dot for enabled
+      }
     } else {
       status = chalk.gray('○') + ' '; // Gray circle for not installed
     }
@@ -550,13 +588,29 @@ async function showStatus() {
 
 async function enableHook(hookName) {
   const hookPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py`);
+  const originalPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.original`);
   const disabledPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.disabled`);
   
-  if (fs.existsSync(hookPath)) {
-    console.log(chalk.yellow(`Hook ${hookName} is already enabled`));
+  // Check if we have an .original file (new disable mechanism)
+  if (fs.existsSync(originalPath)) {
+    try {
+      // Read the stub to check if it's our stub
+      const currentContent = fs.readFileSync(hookPath, 'utf8');
+      if (currentContent.includes('Stub for disabled hook:')) {
+        // Delete the stub
+        fs.unlinkSync(hookPath);
+      }
+      
+      // Restore the original
+      fs.renameSync(originalPath, hookPath);
+      console.log(chalk.green(`✅ Enabled ${hookName}`));
+    } catch (error) {
+      console.error(chalk.red(`Failed to enable ${hookName}:`), error.message);
+    }
     return;
   }
   
+  // Check for old .disabled file format (backward compatibility)
   if (fs.existsSync(disabledPath)) {
     try {
       fs.renameSync(disabledPath, hookPath);
@@ -564,27 +618,68 @@ async function enableHook(hookName) {
     } catch (error) {
       console.error(chalk.red(`Failed to enable ${hookName}:`), error.message);
     }
-  } else {
-    console.error(chalk.red(`Hook ${hookName} not found`));
-    console.log(chalk.gray('Run "claude-hooks list" to see available hooks'));
+    return;
   }
-}
-
-async function disableHook(hookName) {
-  const hookPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py`);
-  const disabledPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.disabled`);
   
-  if (!fs.existsSync(hookPath)) {
-    if (fs.existsSync(disabledPath)) {
-      console.log(chalk.yellow(`Hook ${hookName} is already disabled`));
+  // Check if already enabled
+  if (fs.existsSync(hookPath)) {
+    const content = fs.readFileSync(hookPath, 'utf8');
+    if (content.includes('Stub for disabled hook:')) {
+      console.log(chalk.yellow(`Hook ${hookName} is disabled (stub file present)`));
+      console.log(chalk.gray('This indicates an error in the disable/enable process'));
     } else {
-      console.error(chalk.red(`Hook ${hookName} not found`));
+      console.log(chalk.yellow(`Hook ${hookName} is already enabled`));
     }
     return;
   }
   
+  console.error(chalk.red(`Hook ${hookName} not found`));
+  console.log(chalk.gray('Run "claude-hooks list" to see available hooks'));
+}
+
+async function disableHook(hookName) {
+  const hookPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py`);
+  const originalPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.original`);
+  
+  // Check if already disabled
+  if (fs.existsSync(originalPath)) {
+    console.log(chalk.yellow(`Hook ${hookName} is already disabled`));
+    return;
+  }
+  
+  if (!fs.existsSync(hookPath)) {
+    console.error(chalk.red(`Hook ${hookName} not found`));
+    return;
+  }
+  
   try {
-    fs.renameSync(hookPath, disabledPath);
+    // Move the actual hook to .original
+    fs.renameSync(hookPath, originalPath);
+    
+    // Create a stub that exits cleanly
+    const stubContent = `#!/usr/bin/env python3
+"""
+Stub for disabled hook: ${hookName}
+This hook has been disabled but remains in place to prevent errors.
+To re-enable, use: claude-hooks enable ${hookName}
+"""
+import json
+import sys
+
+# Read input to prevent broken pipe errors
+try:
+    json.load(sys.stdin)
+except:
+    pass
+
+# Exit cleanly with a message
+print(f"Hook '${hookName}' is currently disabled", file=sys.stderr)
+sys.exit(0)
+`;
+    
+    fs.writeFileSync(hookPath, stubContent);
+    fs.chmodSync(hookPath, '755');
+    
     console.log(chalk.green(`✅ Disabled ${hookName}`));
     console.log(chalk.gray('The hook will not run until re-enabled'));
   } catch (error) {
@@ -749,28 +844,52 @@ if __name__ == "__main__":
 
 async function editHook(hookName) {
   const hookPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py`);
+  const originalPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.original`);
+  const disabledPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.disabled`);
   
-  if (!fs.existsSync(hookPath)) {
+  let pathToEdit = hookPath;
+  
+  // Check if the hook is disabled
+  if (fs.existsSync(originalPath)) {
+    console.log(chalk.yellow(`Note: ${hookName} is currently disabled`));
+    pathToEdit = originalPath;
+  } else if (fs.existsSync(disabledPath)) {
+    console.log(chalk.yellow(`Note: ${hookName} is currently disabled (old format)`));
+    pathToEdit = disabledPath;
+  } else if (fs.existsSync(hookPath)) {
+    // Check if it's a stub
+    try {
+      const content = fs.readFileSync(hookPath, 'utf8');
+      if (content.includes('Stub for disabled hook:')) {
+        console.log(chalk.yellow(`Note: ${hookName} is currently disabled (stub)`));
+        console.log(chalk.gray('Enable the hook first to edit the actual code'));
+        return;
+      }
+    } catch {
+      // Continue with normal edit
+    }
+  } else {
     console.error(chalk.red(`Hook ${hookName} not found`));
     return;
   }
   
   const editor = process.env.EDITOR || 'nano';
-  console.log(chalk.cyan(`Opening ${hookName}.py in ${editor}...`));
+  console.log(chalk.cyan(`Opening ${path.basename(pathToEdit)} in ${editor}...`));
   
   try {
-    execSync(`${editor} "${hookPath}"`, { stdio: 'inherit' });
+    execSync(`${editor} "${pathToEdit}"`, { stdio: 'inherit' });
   } catch (error) {
     console.error(chalk.red('Failed to open editor:'), error.message);
-    console.log(chalk.gray(`You can manually edit: ${hookPath}`));
+    console.log(chalk.gray(`You can manually edit: ${pathToEdit}`));
   }
 }
 
 async function removeHook(hookName) {
   const hookPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py`);
   const disabledPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.disabled`);
+  const originalPath = path.join(process.env.HOME, '.claude', 'hooks', `${hookName}.py.original`);
   
-  if (!fs.existsSync(hookPath) && !fs.existsSync(disabledPath)) {
+  if (!fs.existsSync(hookPath) && !fs.existsSync(disabledPath) && !fs.existsSync(originalPath)) {
     console.error(chalk.red(`Hook ${hookName} not found`));
     return;
   }
@@ -792,6 +911,7 @@ async function removeHook(hookName) {
   try {
     if (fs.existsSync(hookPath)) fs.unlinkSync(hookPath);
     if (fs.existsSync(disabledPath)) fs.unlinkSync(disabledPath);
+    if (fs.existsSync(originalPath)) fs.unlinkSync(originalPath);
     console.log(chalk.green(`✅ Removed ${hookName}`));
   } catch (error) {
     console.error(chalk.red('Failed to remove hook:'), error.message);

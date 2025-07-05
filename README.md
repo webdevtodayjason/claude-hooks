@@ -693,6 +693,24 @@ Quick start:
 2. Check `~/.claude/settings.json` is valid JSON
 3. Verify hook files are executable
 
+### Disabled Hook Errors
+If you're seeing "No such file or directory" errors for disabled hooks:
+
+**Problem**: When hooks are disabled using older versions, Claude still tries to execute them, causing errors.
+
+**Solution**: Run the migration script to update disabled hooks to the new format:
+```bash
+node migrate-disabled-hooks.js
+```
+
+This converts disabled hooks to use stub files that exit cleanly, preventing errors while keeping hooks disabled.
+
+**How it works**:
+- Instead of renaming hooks to `.disabled`, the new system:
+  - Moves the original hook to `.py.original`
+  - Creates a stub `.py` file that exits cleanly
+  - Claude can still find and execute the hook, but it does nothing
+
 ### Testing Hooks
 ```bash
 echo '{"tool_name":"Bash","tool_input":{"command":"test"}}' | python3 ~/.claude/hooks/hook-name.py
