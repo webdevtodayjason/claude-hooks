@@ -32,7 +32,19 @@ A comprehensive hook management system for [Claude](https://claude.ai) that enfo
 
 ### 🌟 Never Lose Context Again During Multi-Hour Development Sessions!
 
-We're excited to announce our groundbreaking integration with **[Context Forge](https://github.com/webdevtodayjason/context-forge)** - the industry-leading CLI tool for AI-ready project scaffolding. This integration solves one of the biggest challenges in AI-assisted development: **context loss during conversation compaction**.
+### 🎉 First to Implement Anthropic's New PreCompact Hook!
+
+We're excited to announce our groundbreaking integration with **[Context Forge](https://github.com/webdevtodayjason/context-forge)** - the industry-leading CLI tool for AI-ready project scaffolding. This integration is **the first implementation of Anthropic's brand new PreCompact hook**, announced in Claude Code v1.0.40, solving one of the biggest challenges in AI-assisted development: **context loss during conversation compaction**.
+
+#### Why This is Revolutionary
+
+**Anthropic's PreCompact hook** is a game-changing new feature that allows developers to:
+- 🔍 **Intercept compaction events** before they happen
+- 💾 **Preserve critical context** during the compaction process
+- 🔄 **Automatically restore state** after compaction completes
+- 🚀 **Enable truly continuous workflows** for the first time
+
+We're among the **first to leverage this powerful new capability** from Anthropic, creating an integration that transforms how developers work with AI assistants.
 
 #### What is Context Forge?
 
@@ -63,12 +75,14 @@ During extended coding sessions, Claude Code's context window fills up and perfo
 
 #### The Solution: Automatic Context Recovery
 
-Our Context Forge hooks provide **automatic context recovery** after compaction:
+Our Context Forge hooks provide **automatic context recovery** after compaction using Anthropic's latest hook capabilities:
 
-1. **PreCompact Hook** - Detects Context Forge projects and prepares refresh instructions
+1. **PreCompact Hook** (New in Claude Code v1.0.40) - Intercepts compaction before it happens
 2. **Smart Detection** - Automatically identifies projects with CLAUDE.md, Docs/, and PRPs/
 3. **Context Restoration** - Forces Claude to re-read critical project files after compaction
 4. **Progress Tracking** - Maintains awareness of current implementation stage
+
+> **Technical Note**: The PreCompact hook is a brand new feature from Anthropic that was just released. It's the missing piece that finally makes multi-hour AI development sessions practical. By intercepting the compaction event *before* it happens, we can prepare instructions that ensure context is restored immediately after.
 
 #### Benefits for Developers
 
@@ -446,25 +460,31 @@ See [CLAUDE.md.template](./CLAUDE.md.template) for a complete guide on customizi
 Click on any hook below to see detailed information about what it does and how it helps your development workflow.
 
 <details>
-<summary><strong>🚀 precompact-context-refresh.py</strong> - Context Forge Project Recovery</summary>
+<summary><strong>🚀 precompact-context-refresh.py</strong> - First Implementation of Anthropic's PreCompact Hook</summary>
 
 ### What it does:
-This groundbreaking hook enables multi-hour AI development sessions by solving the context loss problem:
+This groundbreaking hook is the **first implementation of Anthropic's new PreCompact hook event** (released in Claude Code v1.0.40), enabling multi-hour AI development sessions:
+- 🎯 **Uses Anthropic's PreCompact event** to intercept before compaction occurs
 - 🔍 Detects Context Forge projects (CLAUDE.md, Docs/, PRPs/)
 - 📊 Tracks current implementation stage from transcript
 - 💾 Creates marker for post-compaction recovery
 - 📝 Prepares detailed refresh instructions
 
-### Why it's helpful:
-When Claude Code's context window fills up (every ~2 hours), it performs compaction and forgets your project context. This hook ensures Claude automatically recovers all project-specific knowledge, enabling you to work for 8+ hours without interruption.
+### Why it's revolutionary:
+Before Anthropic released the PreCompact hook, there was no way to prepare for compaction events. Now, for the first time, we can:
+- **Intercept compaction before it happens** (impossible before v1.0.40)
+- **Preserve critical state information** during the compaction process
+- **Ensure immediate context recovery** after compaction completes
 
-### Example output:
-```
-Context refresh required after compaction.
-1. Re-read CLAUDE.md to restore project rules and conventions
-2. Check Docs/Implementation.md - you are currently working on Stage 2
-3. Review PRPs/base.md for implementation guidelines
-4. Check Docs/Bug_tracking.md for known issues
+This is a game-changer for AI-assisted development, finally making 8+ hour coding sessions practical and productive.
+
+### Technical implementation:
+```python
+# This hook receives the new PreCompact event from Claude Code
+# Event data includes: session_id, transcript_path, trigger, custom_instructions
+def main():
+    input_data = json.load(sys.stdin)  # PreCompact event from Anthropic
+    # ... detect Context Forge project and prepare recovery
 ```
 </details>
 
