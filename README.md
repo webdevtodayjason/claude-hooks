@@ -3,9 +3,9 @@
 
 ![npm version](https://img.shields.io/npm/v/claude-hooks-manager.svg)
 ![npm downloads](https://img.shields.io/npm/dm/claude-hooks-manager.svg)
-![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-3.1.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Hooks](https://img.shields.io/badge/hooks-18-orange.svg)
+![Hooks](https://img.shields.io/badge/hooks-20-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.6+-blue.svg)
 ![Claude](https://img.shields.io/badge/Claude-Compatible-purple.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
@@ -28,9 +28,111 @@
 
 A comprehensive hook management system for [Claude](https://claude.ai) that enforces coding standards, maintains consistency, and automates workflow tasks across all projects.
 
+## 🚀 Game-Changing Feature: Context Forge Integration
+
+### 🌟 Never Lose Context Again During Multi-Hour Development Sessions!
+
+We're excited to announce our groundbreaking integration with **[Context Forge](https://github.com/webdevtodayjason/context-forge)** - the industry-leading CLI tool for AI-ready project scaffolding. This integration solves one of the biggest challenges in AI-assisted development: **context loss during conversation compaction**.
+
+#### What is Context Forge?
+
+[Context Forge](https://github.com/webdevtodayjason/context-forge) is a powerful CLI tool that implements Andre Karpathy's context engineering principles to generate comprehensive documentation structures. It creates AI-optimized project scaffolds with:
+
+- **CLAUDE.md** - Main context file with project rules and conventions
+- **Docs/** - Structured implementation plans and documentation
+- **PRPs/** - Product Requirement Prompts for detailed specifications
+- **Validation Systems** - Built-in quality gates and checks
+
+Install Context Forge:
+```bash
+npm install -g context-forge
+```
+
+Quick start a new project:
+```bash
+context-forge init
+```
+
+#### The Problem We Solve
+
+During extended coding sessions, Claude Code's context window fills up and performs "compaction" to continue. This causes:
+- 😰 Loss of project-specific rules and conventions
+- 🔄 Forgotten implementation stages and progress
+- 📋 Lost track of PRP guidelines and specifications
+- 🐛 Forgotten bug tracking and known issues
+
+#### The Solution: Automatic Context Recovery
+
+Our Context Forge hooks provide **automatic context recovery** after compaction:
+
+1. **PreCompact Hook** - Detects Context Forge projects and prepares refresh instructions
+2. **Smart Detection** - Automatically identifies projects with CLAUDE.md, Docs/, and PRPs/
+3. **Context Restoration** - Forces Claude to re-read critical project files after compaction
+4. **Progress Tracking** - Maintains awareness of current implementation stage
+
+#### Benefits for Developers
+
+- ✅ **Multi-Hour Workflows** - Work on complex projects for 8+ hours without context loss
+- ✅ **Consistent Quality** - Maintain project standards throughout entire sessions
+- ✅ **Zero Manual Intervention** - Automatic context refresh, no reminders needed
+- ✅ **PRP Compliance** - Continuous adherence to Product Requirement Prompts
+- ✅ **Stage Awareness** - Always knows which implementation phase you're in
+
+#### Setup Context Forge Integration
+
+```bash
+# Install Context Forge hooks
+cd hooks/context-forge
+./install-context-forge-hooks.sh
+
+# Or manually add to ~/.claude/settings.json
+```
+
+[Learn more about Context Forge integration →](hooks/context-forge/README.md)
+
+### 🎯 The Perfect AI Development Workflow
+
+Combine Context Forge and Claude Hooks Manager for the ultimate AI-assisted development experience:
+
+1. **Start with Context Forge**
+   ```bash
+   npm install -g context-forge
+   context-forge init
+   ```
+   - Creates AI-optimized project structure
+   - Generates CLAUDE.md with project rules
+   - Sets up implementation stages and PRPs
+
+2. **Install Claude Hooks Manager**
+   ```bash
+   npm install -g claude-hooks-manager
+   claude-hooks install
+   ```
+   - Enforces coding standards
+   - Maintains consistency
+   - Automates workflows
+
+3. **Enable Context Forge Integration**
+   ```bash
+   cd hooks/context-forge
+   ./install-context-forge-hooks.sh
+   ```
+   - Enables multi-hour workflows
+   - Automatic context recovery
+   - Maintains project awareness
+
+4. **Develop with Confidence**
+   - Work for 8+ hours without context loss
+   - Automatic quality enforcement
+   - Consistent code standards
+   - PRP compliance throughout
+
+This powerful combination transforms AI-assisted development from a novelty into a production-ready workflow that maintains quality and consistency across extended development sessions.
+
 ## 📚 Documentation
 
 ### 🛠️ Guides
+- **[Context Forge Integration Guide](hooks/context-forge/README.md)** - Enable multi-hour workflows with automatic context recovery
 - **[Developing Custom Hooks](docs/developing-custom-hooks.md)** - Create your own hooks with examples and best practices
 - [Project-Aware Hooks](docs/project-aware-hooks.md) - Configure hooks for multi-project environments
 
@@ -317,6 +419,10 @@ See [CLAUDE.md.template](./CLAUDE.md.template) for a complete guide on customizi
 
 | Hook | Trigger | Purpose |
 |------|---------|---------|
+| **Context Forge Hooks** | | |
+| `precompact-context-refresh.py` | Before compaction | Detects Context Forge projects and prepares context recovery |
+| `stop-context-refresh.py` | After compaction | Enforces re-reading of CLAUDE.md, PRPs, and Implementation.md |
+| **Standard Hooks** | | |
 | `pre-commit-validator.py` | Before git commit/push | Runs tests, linting, TypeScript checks |
 | `validate-git-commit.py` | Before git commit | Enforces commit message standards |
 | `database-extension-check.py` | When editing schemas | Prevents unnecessary table creation |
@@ -338,6 +444,46 @@ See [CLAUDE.md.template](./CLAUDE.md.template) for a complete guide on customizi
 ## 📋 Detailed Hook Documentation
 
 Click on any hook below to see detailed information about what it does and how it helps your development workflow.
+
+<details>
+<summary><strong>🚀 precompact-context-refresh.py</strong> - Context Forge Project Recovery</summary>
+
+### What it does:
+This groundbreaking hook enables multi-hour AI development sessions by solving the context loss problem:
+- 🔍 Detects Context Forge projects (CLAUDE.md, Docs/, PRPs/)
+- 📊 Tracks current implementation stage from transcript
+- 💾 Creates marker for post-compaction recovery
+- 📝 Prepares detailed refresh instructions
+
+### Why it's helpful:
+When Claude Code's context window fills up (every ~2 hours), it performs compaction and forgets your project context. This hook ensures Claude automatically recovers all project-specific knowledge, enabling you to work for 8+ hours without interruption.
+
+### Example output:
+```
+Context refresh required after compaction.
+1. Re-read CLAUDE.md to restore project rules and conventions
+2. Check Docs/Implementation.md - you are currently working on Stage 2
+3. Review PRPs/base.md for implementation guidelines
+4. Check Docs/Bug_tracking.md for known issues
+```
+</details>
+
+<details>
+<summary><strong>🔄 stop-context-refresh.py</strong> - Automatic Context Restoration</summary>
+
+### What it does:
+Works in tandem with the PreCompact hook to restore context after compaction:
+- ✅ Detects when compaction has occurred
+- 📚 Forces Claude to re-read all critical project files
+- 🎯 Maintains awareness of current implementation stage
+- 💡 Provides specific instructions based on project structure
+
+### Why it's helpful:
+Eliminates the frustrating need to manually remind Claude about your project after each compaction. Your workflow continues seamlessly, maintaining quality and consistency throughout extended development sessions.
+
+### Integration with Context Forge:
+This hook specifically looks for Context Forge project structures and customizes the refresh instructions based on what files exist in your project, ensuring maximum context recovery with minimum overhead.
+</details>
 
 <details>
 <summary><strong>🔍 pre-commit-validator.py</strong> - Your Safety Net Before Commits</summary>

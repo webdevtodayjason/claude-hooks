@@ -5,7 +5,47 @@ All notable changes to Claude Hooks Manager will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.1] - 2025-07-10
+
+### Added
+- 🚀 **Context Forge Integration** - Revolutionary feature for multi-hour AI development workflows
+- PreCompact hook (`precompact-context-refresh.py`) - Detects Context Forge projects before compaction
+- Stop hook (`stop-context-refresh.py`) - Enforces context restoration after compaction
+- Context Forge utilities (`context-forge-utils.py`) - Advanced project analysis and stage detection
+- Installation script for easy Context Forge hooks setup
+- Comprehensive documentation for Context Forge integration
+
+### Changed
+- Updated README with prominent Context Forge integration section
+- Added "The Perfect AI Development Workflow" combining both tools
+- Increased hook count to 20 (added 2 Context Forge hooks)
+- Enhanced hooks overview table with Context Forge section
+
+### Documentation
+- Added detailed Context Forge integration guide
+- Created test examples and integration documentation
+- Added benefits and use cases for multi-hour workflows
+- Documented automatic context recovery mechanism
+
 ## [3.1.0] - 2025-07-05
+
+### Added
+- Interactive CLI menu system
+- New commands: `status`, `doctor`, `init`, `enable`, `disable`, `create`, `edit`, `remove`, `config`
+- Dart integration commands: `dart init`, `dart edit`
+- Project-aware hooks configuration
+- Migration script for old disabled hooks format
+
+### Changed
+- Improved CLI user experience with interactive prompts
+- Enhanced error messages and diagnostics
+- Better hook management workflow
+
+### Fixed
+- Disabled hooks now use stub files to prevent errors
+- Improved hook detection and status reporting
+
+## [3.0.0] - 2025-07-05
 
 ### Added
 - Dart MCP integration with `.dart` configuration files
@@ -25,13 +65,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project init now offers Dart integration setup
 - Hooks prompt for configuration when .dart file is missing
 
+### Fixed
+- Fixed "No such file or directory" errors when hooks are disabled
+- Implemented stub file system for disabled hooks to prevent Claude execution errors
+- Updated enable/disable mechanism to use `.original` files instead of `.disabled`
+- Added migration script for converting old disabled hooks to new format
+
 ### Documentation
 - Added comprehensive Dart Integration section to README
 - Created CLAUDE.md.template with customization guide
 - Added examples of .dart configuration
 - Documented how to disable Dart features
 
-## [3.0.1] - 2025-07-05
+## [2.9.0] - 2025-07-05
+
+### Added
+- Dart MCP integration with `.dart` configuration files
+- `claude-hooks dart init` command to set up Dart workspace
+- `claude-hooks dart edit` command to modify Dart configuration
+- CLAUDE.md generation with comprehensive project instructions
+- CLAUDE.md.template guide for customization
+- Workspace-aware sync-docs-to-dart hook
+- Workspace-aware validate-dart-task hook
+- Interactive prompts for workspace configuration
+- Documentation sync rules (include/exclude patterns)
+- Integration with project init workflow
+
+### Changed
+- sync-docs-to-dart hook now uses `.dart` configuration instead of guessing
+- validate-dart-task hook suggests project-specific dartboard
+- Project init now offers Dart integration setup
+- Hooks prompt for configuration when .dart file is missing
 
 ### Fixed
 - Fixed "No such file or directory" errors when hooks are disabled
@@ -39,14 +103,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated enable/disable mechanism to use `.original` files instead of `.disabled`
 - Added migration script for converting old disabled hooks to new format
 
-### Changed
-- Disabled hooks now use stub files that exit cleanly instead of being renamed
-- Hook status detection now properly identifies stub files as disabled
-- Edit command can now edit disabled hook's original code
-
-### Added
-- `migrate-disabled-hooks.js` script to convert old `.disabled` hooks to new format
-- Troubleshooting section in README for disabled hook errors
+### Documentation
+- Added comprehensive Dart Integration section to README
+- Created CLAUDE.md.template with customization guide
+- Added examples of .dart configuration
+- Documented how to disable Dart features
 
 ## [3.0.0] - 2025-07-04
 

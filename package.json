@@ -1,6 +1,6 @@
 {
   "name": "claude-hooks-manager",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "A comprehensive hook management system for Claude that enforces coding standards, maintains consistency, and automates workflow tasks",
   "main": "index.js",
   "bin": {
@@ -47,6 +47,10 @@
   },
   "files": [
     "hooks/*.py",
+    "hooks/context-forge/*.py",
+    "hooks/context-forge/*.sh",
+    "hooks/context-forge/*.md",
+    "hooks/context-forge/*.json",
     "install.sh",
     "index.js",
     "settings.example.json",

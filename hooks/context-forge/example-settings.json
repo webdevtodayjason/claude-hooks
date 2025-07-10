@@ -1,0 +1,29 @@
+{
+  "hooks": {
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/context-forge/precompact-context-refresh.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/context-forge/stop-context-refresh.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "_comment": "Context Forge integration hooks for maintaining context across compactions"
+}
